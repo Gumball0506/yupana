@@ -11,6 +11,7 @@ public record FilaPanel(
         String ruc,
         @JsonProperty("razon_social") String razonSocial,
         String telefono,
+        boolean activa,
         ResumenConciliacion conciliacion,
         long cargas,
         List<String> accesos,

@@ -26,10 +26,12 @@ class AccesoController {
 
     private final ServicioAcceso acceso;
     private final ServicioEmpresas empresas;
+    private final RegistroDeSesiones sesiones;
 
-    AccesoController(ServicioAcceso acceso, ServicioEmpresas empresas) {
+    AccesoController(ServicioAcceso acceso, ServicioEmpresas empresas, RegistroDeSesiones sesiones) {
         this.acceso = acceso;
         this.empresas = empresas;
+        this.sesiones = sesiones;
     }
 
     @PostMapping("/login")
@@ -38,7 +40,16 @@ class AccesoController {
         HttpSession http = peticion.getSession(true);
         peticion.changeSessionId(); // nuevo identificador tras ingresar: evita la fijación de sesión
         http.setAttribute(ConfiguracionWeb.ATRIBUTO, sesion);
+        sesiones.registrar(sesion.usuario(), http);
         return yo(sesion);
+    }
+
+    /** Cambia la clave del usuario que tiene la sesión y cierra todas sus demás sesiones (la actual sigue abierta). */
+    @PostMapping("/clave")
+    ResponseEntity<Void> cambiarClave(@RequestBody Map<String, String> cuerpo, Sesion sesion, HttpServletRequest peticion) {
+        acceso.cambiarClave(sesion, cuerpo.get("actual"), cuerpo.get("nueva"), peticion.getRemoteAddr());
+        sesiones.cerrarOtras(sesion.usuario(), peticion.getSession(false));
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/logout")

@@ -327,3 +327,7 @@ body{margin:0;background:#f7f5f0;-webkit-font-smoothing:antialiased}
 .e1-ayuda b{color:var(--e-ink);font-weight:600}
 .e1-igv .e1-compara{margin-top:10px;padding-top:10px;border-top:1px dashed var(--e-line)}
 #estado-accion{margin:12px 0 0;font-size:14px}
+
+/* Empresa desactivada: se ve atenuada pero sigue en el panel para poder reactivarla */
+.pn-inactiva td { opacity: .55; }
+.pn-inactiva td:last-child { opacity: 1; }

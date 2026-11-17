@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,11 +30,13 @@ class EmpresasController {
     private final ServicioEmpresas empresas;
     private final ServicioAcceso acceso;
     private final PanelEstudio panel;
+    private final RegistroDeSesiones sesiones;
 
-    EmpresasController(ServicioEmpresas empresas, ServicioAcceso acceso, PanelEstudio panel) {
+    EmpresasController(ServicioEmpresas empresas, ServicioAcceso acceso, PanelEstudio panel, RegistroDeSesiones sesiones) {
         this.empresas = empresas;
         this.acceso = acceso;
         this.panel = panel;
+        this.sesiones = sesiones;
     }
 
     @GetMapping
@@ -48,11 +51,35 @@ class EmpresasController {
         return empresas.crear(cuerpo.get("ruc"), cuerpo.get("razon_social"), cuerpo.get("telefono"), sesion.usuario());
     }
 
+    @PutMapping("/{id}")
+    Empresa editar(@PathVariable long id, @RequestBody Map<String, String> cuerpo, Sesion sesion) {
+        sesion.exigirEstudio();
+        return empresas.editar(id, cuerpo.get("razon_social"), cuerpo.get("telefono"), sesion.usuario());
+    }
+
+    /** Desactiva (no borra): cierra las sesiones de la MYPE de esa empresa y no deja abrirla hasta reactivarla. */
+    @PostMapping("/{id}/desactivar")
+    Empresa desactivar(@PathVariable long id, Sesion sesion, HttpSession http) {
+        sesion.exigirEstudio();
+        Empresa empresa = empresas.desactivar(id, sesion.usuario());
+        acceso.accesosDe(id).forEach(sesiones::cerrarTodas);
+        if (sesion.empresaId() != null && sesion.empresaId() == id)
+            http.setAttribute(ConfiguracionWeb.ATRIBUTO, new Sesion(sesion.usuario(), sesion.rol(), null));
+        return empresa;
+    }
+
+    @PostMapping("/{id}/reactivar")
+    Empresa reactivar(@PathVariable long id, Sesion sesion) {
+        sesion.exigirEstudio();
+        return empresas.reactivar(id, sesion.usuario());
+    }
+
     /** Cambia la empresa activa DENTRO de la sesión del servidor; las demás peticiones la toman de ahí. */
     @PostMapping("/{id}/activar")
     AccesoController.Yo activar(@PathVariable long id, Sesion sesion, HttpSession http) {
         sesion.exigirEstudio();
         Empresa empresa = empresas.buscar(id).orElseThrow(() -> new ReglaIncumplida("Empresa no encontrada."));
+        if (!empresa.activa()) throw new ReglaIncumplida("La empresa está desactivada: reactívala para abrirla.");
         Sesion activa = new Sesion(sesion.usuario(), sesion.rol(), empresa.id());
         http.setAttribute(ConfiguracionWeb.ATRIBUTO, activa);
         return new AccesoController.Yo(activa.usuario(), activa.rol().name(), empresa);

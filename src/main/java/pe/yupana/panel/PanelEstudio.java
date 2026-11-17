@@ -40,7 +40,7 @@ public class PanelEstudio {
 
     private FilaPanel fila(Empresa e) {
         FilaPanel.ResumenConciliacion resumen = conciliaciones.ultima(e.id()).map(PanelEstudio::resumir).orElse(null);
-        return new FilaPanel(e.id(), e.ruc(), e.razonSocial(), e.telefono(), resumen, cargas.cantidad(e.id()),
+        return new FilaPanel(e.id(), e.ruc(), e.razonSocial(), e.telefono(), e.activa(), resumen, cargas.cantidad(e.id()),
                 accesos.accesosDe(e.id()), mensajes.ultimaFecha(e.id()).orElse(null));
     }
 

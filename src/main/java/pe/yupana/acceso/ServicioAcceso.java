@@ -12,6 +12,7 @@ import pe.yupana.config.PropiedadesYupana;
 import pe.yupana.dominio.ReglaIncumplida;
 import pe.yupana.dominio.Rol;
 import pe.yupana.dominio.Textos;
+import pe.yupana.empresas.Empresa;
 import pe.yupana.empresas.ServicioEmpresas;
 import pe.yupana.seguridad.Claves;
 import pe.yupana.seguridad.DemasiadosIntentos;
@@ -54,12 +55,7 @@ public class ServicioAcceso {
         String nombre = usuario == null ? "" : usuario.strip().toLowerCase(Locale.ROOT);
         String llaveUsuario = "u:" + Textos.acortar(nombre, LLAVE_MAXIMA);
         String llaveIp = "i:" + (ip == null || ip.isBlank() ? "desconocida" : Textos.acortar(ip, LLAVE_MAXIMA));
-        long espera = Math.max(limitador.segundosDeBloqueo(llaveUsuario), limitador.segundosDeBloqueo(llaveIp));
-        if (espera > 0) {
-            eventos.publishEvent(new EventoAuditoria(Tipo.INGRESO_BLOQUEADO,
-                    "usuario=" + nombre + " ip=" + llaveIp.substring(2) + " restan_s=" + espera));
-            throw new DemasiadosIntentos(espera);
-        }
+        exigirNoBloqueado(nombre, llaveUsuario, llaveIp);
         var cuenta = usuarios.buscar(nombre);
         boolean correcta = Claves.coincide(clave == null ? "" : clave, cuenta.map(Usuario::claveCifrada).orElse(HASH_DE_RELLENO));
         if (cuenta.isEmpty() || !correcta) {
@@ -73,8 +69,50 @@ public class ServicioAcceso {
         }
         limitador.registrarExito(llaveUsuario);
         Usuario u = cuenta.get();
+        if (u.rol() == Rol.MYPE && !empresas.buscar(u.empresaId()).map(Empresa::activa).orElse(false)) {
+            eventos.publishEvent(new EventoAuditoria(Tipo.INGRESO_FALLIDO, "usuario=" + u.usuario() + " empresa desactivada"));
+            throw new SinSesion("La empresa de esta cuenta está desactivada. Habla con tu estudio contable.");
+        }
         eventos.publishEvent(new EventoAuditoria(Tipo.INGRESO_EXITOSO, "usuario=" + u.usuario() + " rol=" + u.rol()));
         return new Sesion(u.usuario(), u.rol(), u.empresaId());
+    }
+
+    private void exigirNoBloqueado(String nombre, String llaveUsuario, String llaveIp) {
+        long espera = Math.max(limitador.segundosDeBloqueo(llaveUsuario), limitador.segundosDeBloqueo(llaveIp));
+        if (espera > 0) {
+            eventos.publishEvent(new EventoAuditoria(Tipo.INGRESO_BLOQUEADO,
+                    "usuario=" + nombre + " ip=" + llaveIp.substring(2) + " restan_s=" + espera));
+            throw new DemasiadosIntentos(espera);
+        }
+    }
+
+    /**
+     * Cambio de clave del propio usuario: pide la actual (un fallo cuenta para el mismo bloqueo del ingreso, así este
+     * endpoint no sirve para adivinar claves) y valida la nueva con las mismas reglas que al crear la cuenta.
+     */
+    public void cambiarClave(Sesion sesion, String actual, String nueva, String ip) {
+        String nombre = sesion.usuario();
+        String llaveUsuario = "u:" + Textos.acortar(nombre, LLAVE_MAXIMA);
+        String llaveIp = "i:" + (ip == null || ip.isBlank() ? "desconocida" : Textos.acortar(ip, LLAVE_MAXIMA));
+        exigirNoBloqueado(nombre, llaveUsuario, llaveIp);
+        var cuenta = usuarios.buscar(nombre).orElseThrow(() -> new SinSesion("Inicia sesión para continuar."));
+        if (!Claves.coincide(actual == null ? "" : actual, cuenta.claveCifrada())) {
+            limitador.registrarFallo(llaveUsuario);
+            limitador.registrarFallo(llaveIp);
+            eventos.publishEvent(new EventoAuditoria(Tipo.CLAVE_CAMBIO_FALLIDO, "usuario=" + nombre));
+            throw new ReglaIncumplida("La clave actual no es correcta.");
+        }
+        validarClave(nueva);
+        if (nueva.equals(actual)) throw new ReglaIncumplida("La clave nueva debe ser distinta de la actual.");
+        if (nueva.equalsIgnoreCase(nombre)) throw new ReglaIncumplida("La clave no puede ser igual al usuario.");
+        usuarios.cambiarClave(nombre, Claves.cifrar(nueva));
+        limitador.registrarExito(llaveUsuario);
+        eventos.publishEvent(new EventoAuditoria(Tipo.CLAVE_CAMBIADA, "usuario=" + nombre));
+    }
+
+    private static void validarClave(String clave) {
+        if (clave == null || clave.length() < CLAVE_MINIMA || clave.length() > CLAVE_MAXIMA)
+            throw new ReglaIncumplida("La clave debe tener al menos " + CLAVE_MINIMA + " caracteres.");
     }
 
     /** Cuenta para la MYPE: solo verá su empresa. */
@@ -87,8 +125,7 @@ public class ServicioAcceso {
     public void crear(String usuario, String clave, Rol rol, Long empresaId) {
         if (usuario == null || !usuario.matches("[a-z0-9._-]{3,40}"))
             throw new ReglaIncumplida("Usuario: 3 a 40 caracteres en minúscula, números, punto, guion o guion bajo.");
-        if (clave == null || clave.length() < CLAVE_MINIMA || clave.length() > CLAVE_MAXIMA)
-            throw new ReglaIncumplida("La clave debe tener al menos " + CLAVE_MINIMA + " caracteres.");
+        validarClave(clave);
         if ((rol == Rol.MYPE) != (empresaId != null)) throw new ReglaIncumplida("Solo una cuenta MYPE va unida a una empresa.");
         if (usuarios.existe(usuario)) throw new ReglaIncumplida("Ese usuario ya existe.");
         usuarios.crear(new Usuario(usuario, Claves.cifrar(clave), rol, empresaId));

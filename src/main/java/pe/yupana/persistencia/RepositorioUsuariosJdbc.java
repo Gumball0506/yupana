@@ -40,6 +40,11 @@ class RepositorioUsuariosJdbc implements RepositorioUsuarios {
     }
 
     @Override
+    public void cambiarClave(String usuario, String claveCifrada) {
+        jdbc.sql("UPDATE usuarios SET clave_hash = ? WHERE usuario = ?").params(claveCifrada, usuario).update();
+    }
+
+    @Override
     public List<String> deEmpresa(long empresaId) {
         return jdbc.sql("SELECT usuario FROM usuarios WHERE empresa_id = ? ORDER BY usuario").param(empresaId).query(String.class).list();
     }

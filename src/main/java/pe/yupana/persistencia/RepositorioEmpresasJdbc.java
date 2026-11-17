@@ -17,7 +17,7 @@ import pe.yupana.empresas.RepositorioEmpresas;
 class RepositorioEmpresasJdbc implements RepositorioEmpresas {
 
     private static final RowMapper<Empresa> A_EMPRESA = (rs, i) ->
-            new Empresa(rs.getLong("id"), rs.getString("ruc"), rs.getString("razon_social"), rs.getString("telefono"));
+            new Empresa(rs.getLong("id"), rs.getString("ruc"), rs.getString("razon_social"), rs.getString("telefono"), rs.getBoolean("activa"));
 
     private final JdbcClient jdbc;
 
@@ -35,7 +35,17 @@ class RepositorioEmpresasJdbc implements RepositorioEmpresas {
 
     @Override
     public Optional<Empresa> buscar(long id) {
-        return jdbc.sql("SELECT id, ruc, razon_social, telefono FROM empresas WHERE id = ?").param(id).query(A_EMPRESA).optional();
+        return jdbc.sql("SELECT id, ruc, razon_social, telefono, activa FROM empresas WHERE id = ?").param(id).query(A_EMPRESA).optional();
+    }
+
+    @Override
+    public void actualizar(long id, String razonSocial, String telefono) {
+        jdbc.sql("UPDATE empresas SET razon_social = ?, telefono = ? WHERE id = ?").params(razonSocial, telefono, id).update();
+    }
+
+    @Override
+    public void cambiarEstado(long id, boolean activa) {
+        jdbc.sql("UPDATE empresas SET activa = ? WHERE id = ?").params(activa, id).update();
     }
 
     @Override
@@ -45,6 +55,6 @@ class RepositorioEmpresasJdbc implements RepositorioEmpresas {
 
     @Override
     public List<Empresa> todas() {
-        return jdbc.sql("SELECT id, ruc, razon_social, telefono FROM empresas ORDER BY razon_social").query(A_EMPRESA).list();
+        return jdbc.sql("SELECT id, ruc, razon_social, telefono, activa FROM empresas ORDER BY razon_social").query(A_EMPRESA).list();
     }
 }

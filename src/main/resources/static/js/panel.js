@@ -31,15 +31,17 @@ async function cargar() {
   $("empresas").innerHTML = `<div class="e1-scroll"><table class="e1-data pn-tabla">
     <thead><tr><th>Empresa</th><th>RUC</th><th>Periodo</th><th class="n">Comprobantes</th><th class="n">No cuadran</th><th class="n">Pendientes</th>
       <th class="n">IGV bajo revisión</th><th>Último mensaje</th><th>Acceso MYPE</th><th></th></tr></thead>
-    <tbody>${empresas.map(e => { const c = e.conciliacion; return `<tr>
-      <td class="pn-nombre">${esc(e.razon_social)}</td><td>${esc(e.ruc)}</td>
+    <tbody>${empresas.map(e => { const c = e.conciliacion; return `<tr class="${e.activa ? "" : "pn-inactiva"}">
+      <td class="pn-nombre">${esc(e.razon_social)}${e.activa ? "" : ` <span class="e1-rev">Desactivada</span>`}</td><td>${esc(e.ruc)}</td>
       <td>${c ? esc(c.periodo) : `<span class="e1-rev">${e.cargas ? "Sin conciliar" : "Sin cargas"}</span>`}</td>
       <td class="n">${c ? c.total : "—"}</td><td class="n">${c ? c.con_diferencia : "—"}</td>
       <td class="n">${c ? (c.pendientes ? `<span class="e1-st x">${ic("alert")}${c.pendientes}</span>` : `<span class="e1-st ok">${ic("check")}0</span>`) : "—"}</td>
       <td class="n">${c ? soles(c.igv_revision) : "—"}</td>
       <td>${e.ultimo_mensaje ? esc(fechaTexto(e.ultimo_mensaje)) : "—"}</td>
       <td>${e.accesos.length ? esc(e.accesos.join(", ")) : `<button class="e1-link" data-acceso="${e.id}">Dar acceso</button>`}</td>
-      <td><button class="e1-btn t chico" data-abrir="${e.id}">Abrir${ic("arrow")}</button></td></tr>`; }).join("")}</tbody></table></div>
+      <td>${e.activa ? `<button class="e1-btn t chico" data-abrir="${e.id}">Abrir${ic("arrow")}</button>` : ""}
+        <button class="e1-link" data-editar="${e.id}">Editar</button>
+        <button class="e1-link" data-estado="${e.id}">${e.activa ? "Desactivar" : "Reactivar"}</button></td></tr>`; }).join("")}</tbody></table></div>
     <p class="e1-info">«IGV bajo revisión» es una cifra indicativa sujeta a revisión profesional: no es crédito fiscal perdido ni recuperado.</p>`;
   leccion();
 }
@@ -98,6 +100,7 @@ $("form-empresa").addEventListener("submit", async e => {
 
 // ---------- Abrir empresa y dar acceso ----------
 let accesoPara = null;
+let editando = null;
 document.addEventListener("click", async e => {
   const a = e.target.closest("[data-abrir]");
   if (a) {
@@ -113,6 +116,34 @@ document.addEventListener("click", async e => {
     $("dlg-acceso").showModal();
   }
   if (e.target.closest("[data-cerrar]")) $("dlg-acceso").close();
+  const ed = e.target.closest("[data-editar]");
+  if (ed) {
+    editando = empresas.find(x => x.id === Number(ed.dataset.editar));
+    $("edit-ruc").textContent = "RUC " + editando.ruc;
+    $("edit-razon").value = editando.razon_social;
+    $("edit-telefono").value = editando.telefono || "";
+    $("msg-editar").innerHTML = "";
+    $("dlg-editar").showModal();
+  }
+  if (e.target.closest("[data-cerrar-editar]")) $("dlg-editar").close();
+  const es = e.target.closest("[data-estado]");
+  if (es) {
+    const emp = empresas.find(x => x.id === Number(es.dataset.estado));
+    const accion = emp.activa ? "desactivar" : "reactivar";
+    const aviso = emp.activa ? `¿Desactivar «${emp.razon_social}»? No se borra nada; su MYPE no podrá ingresar hasta que la reactives.` : `¿Reactivar «${emp.razon_social}»?`;
+    if (confirm(aviso)) {
+      try { await api(`/api/empresas/${emp.id}/${accion}`, { method: "POST" }); await cargar(); }
+      catch (err) { alert(err.message); }
+    }
+  }
+});
+$("form-editar").addEventListener("submit", async e => {
+  e.preventDefault();
+  try {
+    await api(`/api/empresas/${editando.id}`, { method: "PUT", body: JSON.stringify({ razon_social: $("edit-razon").value.trim(), telefono: $("edit-telefono").value.trim() || null }) });
+    $("dlg-editar").close();
+    await cargar();
+  } catch (err) { mensaje("msg-editar", err.message); }
 });
 $("form-acceso").addEventListener("submit", async e => {
   e.preventDefault();

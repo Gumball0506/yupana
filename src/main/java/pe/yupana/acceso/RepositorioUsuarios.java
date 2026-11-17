@@ -10,6 +10,9 @@ public interface RepositorioUsuarios {
 
     boolean existe(String usuario);
 
+    /** Reemplaza el hash de la clave del usuario. */
+    void cambiarClave(String usuario, String claveCifrada);
+
     void crear(Usuario usuario);
 
     /** Nombres de usuario de la MYPE de esa empresa. */

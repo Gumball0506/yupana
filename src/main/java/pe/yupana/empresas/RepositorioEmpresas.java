@@ -14,6 +14,12 @@ public interface RepositorioEmpresas {
 
     boolean existeRuc(Ruc ruc);
 
+    /** Cambia razón social y teléfono; el RUC no se edita. */
+    void actualizar(long id, String razonSocial, String telefono);
+
+    /** Desactivar no borra nada: conserva cargas, conciliaciones y casos. */
+    void cambiarEstado(long id, boolean activa);
+
     /** Ordenadas por razón social. */
     List<Empresa> todas();
 }

@@ -5,8 +5,11 @@ CREATE TABLE IF NOT EXISTS empresas (
     ruc          VARCHAR(11)  NOT NULL UNIQUE,
     razon_social VARCHAR(100) NOT NULL,
     telefono     VARCHAR(15),             -- solo dígitos con código de país, para el enlace wa.me
-    creada       VARCHAR(19)  NOT NULL
+    creada       VARCHAR(19)  NOT NULL,
+    activa       BOOLEAN      NOT NULL DEFAULT TRUE   -- desactivar no borra datos
 );
+-- Bases creadas antes de existir «activa»:
+ALTER TABLE empresas ADD COLUMN IF NOT EXISTS activa BOOLEAN NOT NULL DEFAULT TRUE;
 
 -- Usuarios: ESTUDIO ve todas las empresas; MYPE solo la suya. Clave guardada como PBKDF2 (nunca en texto).
 CREATE TABLE IF NOT EXISTS usuarios (

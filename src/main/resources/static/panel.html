@@ -24,6 +24,7 @@
     <nav class="e1-crumb" aria-label="Ubicación"><b>Panel del estudio</b></nav>
     <span class="e1-tag">Demo · datos ficticios</span>
     <span class="e1-user" id="usuario"></span>
+    <a class="e1-btn quiet" href="/clave.html">Cambiar clave</a>
     <button class="e1-btn quiet" id="salir">Salir</button>
   </header>
 
@@ -60,6 +61,23 @@
 
     <p class="e1-note">Demo con datos ficticios. No se solicita clave SOL ni se conecta con SUNAT. El panel multiempresa es la versión 5 del MVP académico.</p>
   </main>
+
+  <dialog class="e1-dlg" id="dlg-editar" aria-labelledby="edit-t">
+    <form class="e1-dlg-in" id="form-editar">
+      <h3 id="edit-t">Editar empresa</h3>
+      <p class="e1-info" id="edit-ruc"></p>
+      <label class="e1-lbl" for="edit-razon">Razón social</label>
+      <input class="e1-in" id="edit-razon" maxlength="100" required>
+      <label class="e1-lbl" for="edit-telefono">WhatsApp de la empresa (opcional)</label>
+      <input class="e1-in mono" id="edit-telefono" inputmode="tel" maxlength="15" placeholder="51999999999">
+      <p class="e1-info">El RUC no se puede cambiar: es la identidad de la empresa.</p>
+      <div id="msg-editar" aria-live="polite"></div>
+      <div class="e1-dlg-acts">
+        <button type="button" class="e1-btn quiet" data-cerrar-editar>Cancelar</button>
+        <button type="submit" class="e1-btn t">Guardar</button>
+      </div>
+    </form>
+  </dialog>
 
   <dialog class="e1-dlg" id="dlg-acceso" aria-labelledby="acc-t">
     <form class="e1-dlg-in" id="form-acceso">
