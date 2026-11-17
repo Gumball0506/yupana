@@ -1,0 +1,51 @@
+# Despliegue en Render (https://render.com): New → Blueprint → elige este repositorio.
+# Crea el servicio web (Docker, plan gratuito) y una base PostgreSQL gratuita ya conectada.
+# Los planes gratuitos tienen límites (el servicio se duerme tras 15 min sin visitas y la base gratuita vence a los 30 días):
+# confírmalos en https://render.com/free
+databases:
+  - name: yupana-db
+    plan: free
+    databaseName: yupana
+    user: yupana
+
+services:
+  - type: web
+    name: yupana
+    runtime: docker
+    plan: free
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: produccion
+      - key: YUPANA_DB_HOST
+        fromDatabase:
+          name: yupana-db
+          property: host
+      - key: YUPANA_DB_PORT
+        fromDatabase:
+          name: yupana-db
+          property: port
+      - key: YUPANA_DB_NAME
+        fromDatabase:
+          name: yupana-db
+          property: database
+      - key: YUPANA_DB_USUARIO
+        fromDatabase:
+          name: yupana-db
+          property: user
+      - key: YUPANA_DB_CLAVE
+        fromDatabase:
+          name: yupana-db
+          property: password
+      # Clave de estudio.demo y mype.a: Render la genera; la ves en Environment del servicio
+      - key: YUPANA_SEED_CLAVE
+        generateValue: true
+      - key: YUPANA_COOKIE_SECURE
+        value: "true"
+      - key: YUPANA_HSTS
+        value: "true"
+      # El plan gratuito tiene 512 MB: se limita el montículo de Java y el pool de conexiones
+      - key: JAVA_TOOL_OPTIONS
+        value: "-Xmx300m -Xss512k -XX:+UseSerialGC -XX:+ExitOnOutOfMemoryError"
+      - key: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+        value: "5"
