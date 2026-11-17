@@ -1,88 +1,90 @@
-# Yupana · H6 — H5 completo sobre arquitectura por capas
+# Yupana · MVP publicable (H6 + Entregable 4)
 
-Hace lo mismo que **H5**:
-- panel multiempresa del estudio;
-- login por rol;
-- lección del RUC;
-- simulador SIRE;
-- chat simulado tipo WhatsApp;
-- Confirmar / Observar, aviso del día y feedback.
+![CI](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)
+<!-- Cambia OWNER/REPO por el repositorio de GitHub cuando lo subas; el flujo está en .github/workflows/ci.yml -->
 
-La diferencia está en el código. Se construyó sobre el **refactor de H2 de nuestro compañero** (Clean Code, capas, patrones y controles ISO 27001) y se le sumaron los módulos de H3–H5 respetando esas mismas reglas.
+Conciliación tributaria diaria para MYPE peruanas: carga compras y la propuesta RCE, concilia, muestra el «IGV bajo revisión» y permite confirmar u observar cada caso. Multiempresa para estudios contables, simulador SIRE y chat simulado.
 
-Java 21 o 25 · Spring Boot 4 · H2 · Apache POI. Usa **datos ficticios**: sin clave SOL, sin SUNAT real y sin WhatsApp real.
+**Todo es ficticio:** sin SUNAT, sin clave SOL, sin WhatsApp real. Ningún botón presenta nada a SUNAT. La cifra se rotula «IGV bajo revisión (demo)… no es crédito fiscal perdido ni recuperado».
 
-## Ejecutar
+Java 21 · Spring Boot 4.1.2 · JDBC · H2 (demo y pruebas) · PostgreSQL 16 (producción) · Apache POI.
+
+## Correr en local (H2, sin Docker)
 ```
-mvnw.cmd test                        pruebas (52)
-mvnw.cmd spring-boot:run             http://localhost:8770  (landing → «Ingresar a la demo»)
+mvnw.cmd test                  pruebas (87; con -Ppostgres, 3 más contra PostgreSQL real)
+mvnw.cmd spring-boot:run       http://localhost:8770  (landing → «Ingresar a la demo»)
 ```
-- Con JDK 21: agrega `-Djava.version=21`.
-- Usuarios de demo (se crean con la base vacía): `estudio.demo` y `mype.a`. La clave sale de la variable `YUPANA_SEED_CLAVE`; si no está, se usa el valor por defecto de `application.properties`.
-- Perfiles, iguales a los de su versión: `docente` enciende `/h2-console` y `produccion` deshabilita «Reiniciar demo».
-- Por defecto el servidor solo escucha en `127.0.0.1`. Para un servidor real hay que cambiar `server.address` y ponerlo detrás de HTTPS.
+- Usuarios de demo (se crean con la base vacía): `estudio.demo` y `mype.a`. Clave por defecto **solo en local**: `Yupana2026*` (o `YUPANA_SEED_CLAVE`).
+- El servidor escucha solo en `127.0.0.1`. La base es `./data/yupana` (no se sube a Git); borra `data/` para empezar de cero.
+- Perfil `docente`: `-Dspring-boot.run.profiles=docente` enciende `/h2-console`.
 
-## Estructura (las dependencias apuntan hacia el dominio)
+## Correr con Docker (PostgreSQL)
+```
+cp .env.example .env                       # y cambia POSTGRES_PASSWORD y YUPANA_SEED_CLAVE (mín. 12 caracteres)
+docker compose up --build -d               # db + app + respaldo, sin HTTPS: http://localhost:8770
+curl http://localhost:8770/actuator/health # {"status":"UP"}
+docker compose --profile https up --build -d   # además Caddy con HTTPS automático para YUPANA_DOMINIO
+```
+Prueba completa (ingreso → carga → conciliación → casos → reinicio → persistencia):
+```
+CLAVE=<tu YUPANA_SEED_CLAVE> REINICIAR="docker compose restart app" sh scripts/humo.sh
+```
+
+### Variables de entorno
+| Variable | Para qué | Obligatoria |
+|---|---|---|
+| `YUPANA_SEED_CLAVE` | Clave de los usuarios iniciales. En `produccion` el arranque **falla** si falta, es la de demostración o tiene menos de 12 caracteres | Sí (producción) |
+| `YUPANA_DB_URL` · `YUPANA_DB_USUARIO` · `YUPANA_DB_CLAVE` | Conexión a PostgreSQL (el compose las arma desde `POSTGRES_*`) | Sí (producción) |
+| `POSTGRES_DB` · `POSTGRES_USER` · `POSTGRES_PASSWORD` | Base de datos del compose | `POSTGRES_PASSWORD` sí |
+| `YUPANA_SERVER_ADDRESS` | Dirección donde escucha. `127.0.0.1` en local, `0.0.0.0` en el contenedor | No |
+| `YUPANA_COOKIE_SECURE` | Cookie de sesión solo por HTTPS. `true` con Caddy; `false` solo para probar sin HTTPS | No (`true` por defecto en producción) |
+| `YUPANA_HSTS` | Cabecera Strict-Transport-Security | No |
+| `YUPANA_DOMINIO` | Dominio público para Caddy (HTTPS) | Solo con `--profile https` |
+| `NVD_API_KEY` | Clave gratuita del NVD para OWASP Dependency-Check (solo CI o escaneo local) | No |
+
+Parámetros del negocio y la seguridad en `application.properties` (prefijo `yupana.`): `tolerancia`, `max-filas`, `reinicio-habilitado`, `login.max-intentos`, `login.bloqueo-minutos`, `limite.login-por-minuto`, `limite.carga-por-minuto`.
+
+### Perfiles
+| Perfil | Qué hace |
+|---|---|
+| (ninguno) | Demo local con H2 |
+| `docente` | Enciende la consola de la base para mostrar las tablas |
+| `produccion` | Endurecido: exige clave propia, PostgreSQL por entorno, cookie `Secure`, HSTS, «Reiniciar demo» apagado, sin datos de ejemplo, IP real tras el proxy |
+
+## Respaldo y restauración
+Un servicio del compose hace `pg_dump` cada 24 horas: 7 diarios y 4 semanales en `./respaldos`, validados antes de aceptarlos. Detalle, restauración y prueba de restauración en [`docs/RESPALDO_Y_RESTAURACION.md`](docs/RESPALDO_Y_RESTAURACION.md).
+
+## Estructura
 | Paquete | Qué hay |
 |---|---|
-| `dominio` | Reglas puras, sin Spring: `Conciliador`, `LlaveComprobante`, `Ruc` (módulo 11), `AccionCaso`, `Rol`, `SimuladorSire`, `Csv`, `Fechas` |
-| `carga` | Lectores CSV/XLSX, validación por cadena de reglas, `ServicioCargas` (por empresa) y el evento `DemoReiniciada` |
-| `conciliacion` | `ServicioConciliacion`, exportador CSV (con revisión) y el evento `ConciliacionEjecutada` |
-| `casos` | Confirmar / Observar, aviso del día (`RedactorAviso`) y herencia de revisiones al volver a conciliar |
-| `empresas` · `acceso` | Alta de empresas; usuarios, ingreso y accesos de la MYPE |
-| `sire` · `mensajes` | Simulador SIRE con tickets; chat simulado |
-| `uso` | Eventos anónimos y feedback (Marketing 5.0) |
-| `panel` | Consulta de solo lectura del panel del estudio. Junta varios módulos y nadie depende de él |
-| `persistencia` | Un adaptador JDBC por puerto. Es la única capa con SQL, y todas sus consultas filtran por empresa |
-| `seguridad` | `Claves` (PBKDF2), `Sesion` (rol + empresa activa), auditoría (`EventoAuditoria`, `RegistroAuditoria`) |
-| `web` | Un controlador por área, `ConfiguracionWeb` (interceptor + `Sesion` inyectada), `ManejadorErrores`, cabeceras de seguridad |
-| `config` | `PropiedadesYupana` y `Siembra` |
+| `dominio` | Reglas puras, sin Spring: `Conciliador`, `LlaveComprobante`, `Ruc` (módulo 11), `SimuladorSire`… |
+| `carga` · `conciliacion` · `casos` · `empresas` · `acceso` · `sire` · `mensajes` · `uso` | Un módulo de aplicación por área, con su puerto de salida |
+| `panel` | Consulta de solo lectura del panel del estudio; nadie depende de él |
+| `persistencia` | Un adaptador JDBC por puerto: único lugar con SQL |
+| `seguridad` | Claves PBKDF2, sesión, auditoría, bloqueo y límites |
+| `web` | Controladores, manejo de errores, cabeceras de seguridad, registro de sesiones |
+| `config` | Propiedades, exigencias de producción y siembra |
 
-`ArquitecturaTest` hace fallar la compilación de pruebas si:
-- el dominio importa Spring, JDBC u otra capa;
-- algún módulo de aplicación usa SQL o la web;
-- la web toca la persistencia;
-- alguien depende del panel.
+`ArquitecturaTest` falla si el dominio importa Spring o JDBC, si algo distinto de `persistencia` usa SQL, si la web toca la persistencia o si alguien depende de `panel`. Diagramas de flujo, arquitectura, despliegue, secuencia y ER en [`docs/DIAGRAMAS.md`](docs/DIAGRAMAS.md).
 
-## Patrones de diseño
-| Patrón | Dónde |
-|---|---|
-| Strategy | `ComparadorDeValores`, `LectorArchivo` |
-| Factory Method | `FabricaLectores` |
-| Cadena de reglas | `ReglaDeFila` |
-| Value Object | `LlaveComprobante`, `Ruc` |
-| Repository con puertos y adaptadores, Service Layer | un puerto por módulo y su adaptador en `persistencia` |
-| Observer | `EventoAuditoria` → `RegistroAuditoria`; `ConciliacionEjecutada` → los casos heredan revisiones; `DemoReiniciada` → el chat y el SIRE se limpian |
-| Read model (consulta separada) | `PanelEstudio` |
+## Seguridad
+- **Entrada:** extensión, firma ZIP del `.xlsx`, 2 MB, 5 000 filas y duplicados; nunca se evalúan fórmulas. **Salida:** CSV protegido contra fórmulas; valores ajenos recortados.
+- **Acceso:** claves PBKDF2 (210 000 iteraciones); cookie HttpOnly, SameSite=Strict y `Secure` en producción; sesión nueva al ingresar; **bloqueo de 15 min tras 5 fallos** (por usuario y por IP, sin revelar qué usuarios existen); límite de peticiones por IP en ingreso y carga; cambio de clave que cierra las otras sesiones; la empresa sale siempre de la sesión del servidor.
+- **Errores:** sin trazas hacia el cliente; 503 claro si la base no responde.
+- **Cabeceras:** CSP `script-src 'self'`, `X-Frame-Options`, `nosniff`, HSTS en producción.
+- **Auditoría** (tabla `auditoria`): cargas, conciliaciones, ingresos (exitosos, fallidos y bloqueados), claves cambiadas, empresas creadas, editadas y desactivadas, casos revisados. Nunca guarda contenido de archivos.
+- **Dependencias:** `python scripts/escaneo_osv.py` (sin clave) y OWASP Dependency-Check con `-Pseguridad` (necesita `NVD_API_KEY`).
+- **Repositorio:** `.gitignore` excluye `data/`, `.env`, logs y respaldos. Nada de secretos en el código.
 
-## Seguridad (lo de la versión E2 más lo de H5)
-- **Entrada:** extensión, firma ZIP del `.xlsx`, 2 MB, 5 000 filas y duplicados; nunca se evalúan fórmulas. **Salida:** CSV protegido contra fórmulas y valores ajenos recortados.
-- **Errores:** sin trazas hacia el cliente, con código de soporte. **CSP:** `script-src 'self'`, sin scripts dentro del HTML (cada pantalla tiene su `.js`).
-- **Acceso:**
-  - claves con PBKDF2 (210 000 iteraciones, sal aleatoria);
-  - cookie HttpOnly y SameSite=Strict, con un identificador de sesión nuevo al ingresar;
-  - mismo mensaje y mismo tiempo de respuesta para un usuario inexistente que para una clave mala;
-  - la empresa se toma de la sesión del servidor, nunca del navegador.
-- **Auditoría** (tabla `auditoria`): cargas, conciliaciones, ingresos exitosos y fallidos, accesos denegados, empresas y accesos creados, casos revisados e importaciones del SIRE. Nunca guarda contenido de archivos.
+## Pruebas
+87 pruebas con H2 y 3 contra PostgreSQL real (`mvnw test -Ppostgres`, sin Docker). Incluyen: dominio, carga, conciliación, casos, multiempresa, acceso, bloqueo, límites, cambio de clave, empresas, arquitectura, producción, salud, 503 y el **mes de 100 compras** (`datos_demo/mes_100_compras/`, comparado comprobante por comprobante con una hoja de respuestas generada aparte). Cobertura (JaCoCo): 89.8 % de instrucciones; dominio, carga, conciliación y casos sobre 95 % (`target/site/jacoco/index.html`).
 
-## Pruebas (52)
-| Origen | Pruebas |
-|---|---|
-| Del compañero, adaptadas a multiempresa | 39: dominio, carga, conciliación, CSV, API segura y arquitectura (+1 regla nueva) |
-| Nuevas | `ReglasNuevasTest` (RUC, acción, SIRE, CSV), `CasosTest` (T13/T14), `MultiempresaTest` (aislamiento, panel, SIRE, chat), `AccesoTest` (401/403/409, auditoría de ingreso) |
-
-## Diferencias con H5
-| | H5 | H6 |
-|---|---|---|
-| Funciones y pantallas | Todas | Las mismas |
-| Código | 6 clases grandes | 13 paquetes con responsabilidades separadas |
-| Pruebas | 19 | 52 |
-| Auditoría ISO | No | Sí |
-| Política de seguridad (CSP) | No | Sí |
-
-## Pendiente antes de publicar en internet
-- Límite de intentos de login.
-- HTTPS.
-- PostgreSQL con respaldo.
-- Escaneo de dependencias.
-- Editar o borrar empresas y cambiar claves.
+## Lo que sigue pendiente
+- **Docker no se pudo ejecutar donde se desarrolló.** El Dockerfile y el compose están escritos y el YAML validado, pero la verificación real la hace el trabajo `docker` del CI (o `docker compose up --build` en un equipo con Docker).
+- `pg_dump`/`pg_restore` reales y `scripts/probar_restauracion.sh`: se ejecutan en el CI; falta guardar su salida como evidencia.
+- OWASP Dependency-Check necesita una clave del NVD; el escaneo con OSV sí se ejecutó (73 dependencias, sin hallazgos).
+- Las pantallas nuevas (cambiar clave, editar y desactivar empresas) se probaron por API y con revisión de sintaxis; falta recorrerlas en un navegador.
+- Un estudio ve todas las empresas: no existe el concepto de «varios estudios, cada uno con las suyas». Si se necesita, hay que modelarlo.
+- Las sesiones viven en memoria del servidor: se pierden al reiniciar y no se comparten entre instancias.
+- Repositorio remoto de GitHub, dominio y certificado: los pone el equipo (el badge de CI apunta a `OWNER/REPO`).
+- Conexión real con SUNAT/SIRE y WhatsApp: fuera del MVP.
