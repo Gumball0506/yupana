@@ -14,11 +14,16 @@ import pe.yupana.YupanaApplication;
 /** El perfil «produccion» exige una clave propia: sin ella, o con la de demostración, el servidor no arranca. */
 class ProduccionTest {
 
-    /** La clave llega como argumento: tiene más precedencia que application-produccion.properties (como una variable de entorno). */
+    /**
+     * Todo llega como argumento de línea de comandos: tiene más precedencia que application-produccion.properties
+     * (igual que una variable de entorno) y así la base es de verdad en memoria, nunca ./data.
+     */
     private static ConfigurableApplicationContext arrancar(String baseDeDatos, String clave) {
-        var builder = new SpringApplicationBuilder(YupanaApplication.class).profiles("produccion").web(WebApplicationType.SERVLET)
-                .properties("server.port=0", "spring.datasource.url=jdbc:h2:mem:" + baseDeDatos + ";DATABASE_TO_LOWER=TRUE");
-        return clave == null ? builder.run() : builder.run("--yupana.semilla-clave=" + clave);
+        var args = new java.util.ArrayList<>(java.util.List.of("--server.port=0",
+                "--spring.datasource.url=jdbc:h2:mem:" + baseDeDatos + ";DATABASE_TO_LOWER=TRUE"));
+        if (clave != null) args.add("--yupana.semilla-clave=" + clave);
+        return new SpringApplicationBuilder(YupanaApplication.class).profiles("produccion").web(WebApplicationType.SERVLET)
+                .run(args.toArray(String[]::new));
     }
 
     private static String causaRaiz(Throwable e) {
