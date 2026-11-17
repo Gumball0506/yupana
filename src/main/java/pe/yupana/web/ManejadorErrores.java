@@ -7,6 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.dao.QueryTimeoutException;
+import org.springframework.dao.TransientDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,6 +19,7 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import pe.yupana.carga.ErrorCarga;
 import pe.yupana.dominio.ReglaIncumplida;
 import pe.yupana.seguridad.AccesoDenegado;
+import pe.yupana.seguridad.DemasiadasPeticiones;
 import pe.yupana.seguridad.DemasiadosIntentos;
 import pe.yupana.seguridad.EmpresaNoElegida;
 import pe.yupana.seguridad.EventoAuditoria;
@@ -56,6 +60,26 @@ class ManejadorErrores {
     ResponseEntity<CuerpoErrores> demasiadosIntentos(DemasiadosIntentos e) {
         return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).header("Retry-After", String.valueOf(e.segundosRestantes()))
                 .body(CuerpoErrores.de(e.getMessage()));
+    }
+
+    @ExceptionHandler(DemasiadasPeticiones.class)
+    ResponseEntity<CuerpoErrores> demasiadasPeticiones(DemasiadasPeticiones e) {
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).header("Retry-After", String.valueOf(e.segundosRestantes()))
+                .body(CuerpoErrores.de(e.getMessage()));
+    }
+
+    /**
+     * La base de datos no responde (caída, red, tiempo de espera agotado): un 503 claro y con Retry-After, no un 500 genérico.
+     * El detalle va a la bitácora con un código de soporte.
+     */
+    // CannotGetJdbcConnectionException (sin conexión) es una DataAccessResourceFailureException
+    @ExceptionHandler({DataAccessResourceFailureException.class, QueryTimeoutException.class, TransientDataAccessException.class})
+    ResponseEntity<CuerpoErrores> baseNoDisponible(DataAccessException e) {
+        String codigo = UUID.randomUUID().toString().substring(0, 8);
+        LOG.error("Base de datos no disponible codigo={}", codigo, e);
+        auditoria.publishEvent(new EventoAuditoria(Tipo.ERROR_INTERNO, "base no disponible codigo=" + codigo + " tipo=" + e.getClass().getSimpleName()));
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).header("Retry-After", "30")
+                .body(CuerpoErrores.de("El servicio no puede acceder a la base de datos en este momento. Inténtalo de nuevo en unos minutos. Código de soporte: " + codigo + "."));
     }
 
     @ExceptionHandler(EmpresaNoElegida.class)

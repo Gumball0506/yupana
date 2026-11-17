@@ -16,7 +16,7 @@ import pe.yupana.config.PropiedadesYupana;
 class HstsTest {
 
     private static String hsts(boolean activo) throws Exception {
-        var filtro = new FiltroCabecerasSeguridad(new PropiedadesYupana(new BigDecimal("0.01"), 5000, true, null, false, activo, new PropiedadesYupana.Login(5, 15)));
+        var filtro = new FiltroCabecerasSeguridad(new PropiedadesYupana(new BigDecimal("0.01"), 5000, true, null, false, activo, new PropiedadesYupana.Login(5, 15), new PropiedadesYupana.Limite(20, 30)));
         var respuesta = new MockHttpServletResponse();
         filtro.doFilter(new MockHttpServletRequest("GET", "/"), respuesta, new MockFilterChain());
         return respuesta.getHeader("Strict-Transport-Security");
