@@ -1,2 +1,9 @@
 /mvnw text eol=lf
 *.cmd text eol=crlf
+
+# Archivos que corren en Linux (contenedor, CI): siempre fin de línea LF
+Dockerfile text eol=lf
+*.sh text eol=lf
+Caddyfile text eol=lf
+docker-compose.yml text eol=lf
+.env.example text eol=lf
