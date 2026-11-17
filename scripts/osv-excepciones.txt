@@ -1,0 +1,1 @@
+# Excepciones del escaneo OSV: una por linea, «ID | motivo y fecha de revision». Hoy no hay ninguna.

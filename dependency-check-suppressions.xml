@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Falsos positivos o hallazgos que no aplican, CADA UNO con su razón y fecha de revisión. Por ahora no hay ninguno. -->
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+</suppressions>

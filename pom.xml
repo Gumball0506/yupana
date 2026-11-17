@@ -118,6 +118,39 @@
 
 	<profiles>
 		<!-- mvnw test -Ppostgres : solo las pruebas contra PostgreSQL real -->
+		<!-- mvnw verify -Pseguridad : escaneo de dependencias (OWASP Dependency-Check). Falla con CVSS >= 7 (alto o crítico).
+		     Necesita una clave gratuita del NVD en la variable NVD_API_KEY; sin ella la descarga de datos es muy lenta o se rechaza. -->
+		<profile>
+			<id>seguridad</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.owasp</groupId>
+						<artifactId>dependency-check-maven</artifactId>
+						<version>13.0.0</version>
+						<configuration>
+							<failBuildOnCVSS>7</failBuildOnCVSS>
+							<nvdApiKeyEnvironmentVariable>NVD_API_KEY</nvdApiKeyEnvironmentVariable>
+							<skipTestScope>true</skipTestScope>
+							<suppressionFiles>
+								<suppressionFile>dependency-check-suppressions.xml</suppressionFile>
+							</suppressionFiles>
+							<formats>
+								<format>HTML</format>
+								<format>JSON</format>
+							</formats>
+						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>check</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 		<profile>
 			<id>postgres</id>
 			<properties>
