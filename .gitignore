@@ -31,3 +31,17 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Yupana: datos y secretos (nunca al repositorio) ###
+data/
+*.mv.db
+*.trace.db
+*.lock.db
+.env
+.env.*
+!.env.example
+*.log
+logs/
+respaldos/
+*.pem
+*.key

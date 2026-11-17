@@ -36,7 +36,7 @@ class Siembra implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws IOException {
-        if (!empresas.todas().isEmpty() || propiedades.semillaClave() == null) return;
+        if (!empresas.todas().isEmpty() || propiedades.semillaClave() == null || propiedades.semillaClave().isBlank()) return;
         long a = empresas.crear("20999910018", "Comercial Demo A S.A.C.", "51900000001", SISTEMA).id();
         empresas.crear("20999910026", "Servicios Demo B E.I.R.L.", null, SISTEMA);
         empresas.crear("20999910034", "Taller Demo C S.R.L.", null, SISTEMA);

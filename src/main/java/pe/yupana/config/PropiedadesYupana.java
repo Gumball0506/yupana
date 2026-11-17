@@ -14,6 +14,7 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
  * @param reinicioHabilitado  si «Reiniciar demo» borra datos; en un servidor público debe estar en false
  * @param semillaClave        clave de los usuarios de demostración que se crean con la base vacía (variable YUPANA_SEED_CLAVE)
  * @param semillaDatos        si además se cargan y concilian los archivos de ejemplo en la empresa A
+ * @param hsts                si las respuestas llevan Strict-Transport-Security (solo cuando se sirve por HTTPS)
  */
 @ConfigurationProperties(prefix = "yupana")
 public record PropiedadesYupana(
@@ -21,5 +22,6 @@ public record PropiedadesYupana(
         @DefaultValue("5000") int maxFilas,
         @DefaultValue("true") boolean reinicioHabilitado,
         String semillaClave,
-        @DefaultValue("false") boolean semillaDatos) {
+        @DefaultValue("false") boolean semillaDatos,
+        @DefaultValue("false") boolean hsts) {
 }

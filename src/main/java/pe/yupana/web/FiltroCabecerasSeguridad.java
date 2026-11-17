@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import pe.yupana.config.PropiedadesYupana;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,6 +23,14 @@ public class FiltroCabecerasSeguridad extends OncePerRequestFilter {
             + "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; "
             + "img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'";
 
+    static final String POLITICA_TRANSPORTE = "max-age=31536000; includeSubDomains";
+
+    private final boolean hsts;
+
+    public FiltroCabecerasSeguridad(PropiedadesYupana propiedades) {
+        this.hsts = propiedades.hsts();
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest peticion, HttpServletResponse respuesta, FilterChain cadena)
             throws ServletException, IOException {
@@ -31,6 +41,7 @@ public class FiltroCabecerasSeguridad extends OncePerRequestFilter {
         respuesta.setHeader("X-Content-Type-Options", "nosniff");
         respuesta.setHeader("Referrer-Policy", "no-referrer");
         respuesta.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+        if (hsts) respuesta.setHeader("Strict-Transport-Security", POLITICA_TRANSPORTE);
         if (peticion.getRequestURI().startsWith("/api/")) respuesta.setHeader("Cache-Control", "no-store");
         cadena.doFilter(peticion, respuesta);
     }
