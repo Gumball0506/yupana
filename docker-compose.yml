@@ -16,6 +16,24 @@ services:
       timeout: 5s
       retries: 10
 
+  # Respaldo diario de la base (7 diarios + 4 semanales) en ./respaldos. Ver docs/RESPALDO_Y_RESTAURACION.md
+  respaldo:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGHOST: db
+      PGUSER: ${POSTGRES_USER:-yupana}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: ${POSTGRES_DB:-yupana}
+      DESTINO: /respaldos
+    volumes:
+      - ./scripts:/scripts:ro
+      - ./respaldos:/respaldos
+    entrypoint: ["/bin/sh", "-c", "while true; do /bin/sh /scripts/respaldo.sh || echo 'RESPALDO FALLIDO' >&2; sleep 86400; done"]
+
   app:
     build: .
     restart: unless-stopped
