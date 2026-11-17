@@ -79,6 +79,11 @@
 			<artifactId>spring-boot-starter-webmvc-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- Salud del servicio: solo /actuator/health, sin detalles (ver application.properties) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 		<!-- PostgreSQL: driver para producción (el esquema es el mismo que en H2) -->
 		<dependency>
 			<groupId>org.postgresql</groupId>

@@ -1,0 +1,6 @@
+# HTTPS automático (Let's Encrypt) para el dominio de YUPANA_DOMINIO.
+# Con YUPANA_DOMINIO=localhost Caddy usa su propia autoridad local (aviso de certificado en el navegador).
+{$YUPANA_DOMINIO:localhost} {
+	encode gzip
+	reverse_proxy app:8770
+}

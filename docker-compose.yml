@@ -1,0 +1,55 @@
+# Local sin HTTPS:   docker compose up --build -d            (app en http://localhost:8770)
+# Con HTTPS y dominio: docker compose --profile https up --build -d   (Caddy en 80/443)
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-yupana}
+      POSTGRES_USER: ${POSTGRES_USER:-yupana}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD en .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: produccion
+      YUPANA_DB_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-yupana}
+      YUPANA_DB_USUARIO: ${POSTGRES_USER:-yupana}
+      YUPANA_DB_CLAVE: ${POSTGRES_PASSWORD}
+      YUPANA_SEED_CLAVE: ${YUPANA_SEED_CLAVE:?Define YUPANA_SEED_CLAVE en .env}
+      YUPANA_COOKIE_SECURE: ${YUPANA_COOKIE_SECURE:-false}
+      YUPANA_HSTS: ${YUPANA_HSTS:-false}
+    ports:
+      - "127.0.0.1:8770:8770"   # solo este equipo; el público entra por Caddy
+
+  caddy:
+    image: caddy:2-alpine
+    profiles: ["https"]
+    restart: unless-stopped
+    depends_on:
+      - app
+    environment:
+      YUPANA_DOMINIO: ${YUPANA_DOMINIO:-localhost}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:
