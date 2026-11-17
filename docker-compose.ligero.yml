@@ -1,0 +1,20 @@
+# Ajustes para un servidor pequeño (1 GB de RAM, como los VPS gratuitos). Se suma al compose principal:
+#   docker compose -f docker-compose.yml -f docker-compose.ligero.yml --profile https up --build -d
+# Necesita swap (scripts/preparar_vps.sh lo crea). Los límites son una guía: si la app se reinicia sola, sube app a 640m.
+services:
+  db:
+    mem_limit: 200m
+    command: ["postgres", "-c", "shared_buffers=48MB", "-c", "max_connections=20", "-c", "work_mem=2MB",
+              "-c", "maintenance_work_mem=16MB", "-c", "effective_cache_size=128MB"]
+
+  app:
+    mem_limit: 480m
+    environment:
+      JAVA_TOOL_OPTIONS: "-Xmx300m -Xss512k -XX:+UseSerialGC -XX:+ExitOnOutOfMemoryError"
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: "5"
+
+  respaldo:
+    mem_limit: 48m
+
+  caddy:
+    mem_limit: 64m
