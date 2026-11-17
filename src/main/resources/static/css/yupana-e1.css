@@ -331,3 +331,25 @@ body{margin:0;background:#f7f5f0;-webkit-font-smoothing:antialiased}
 /* Empresa desactivada: se ve atenuada pero sigue en el panel para poder reactivarla */
 .pn-inactiva td { opacity: .55; }
 .pn-inactiva td:last-child { opacity: 1; }
+
+/* ---- Celular: la barra superior se parte en dos filas (Salir y Cambiar clave nunca quedan fuera de la pantalla) ---- */
+@media (max-width:899px){
+  .e1-bar{flex-wrap:wrap;gap:2px 10px;padding:6px 12px;min-height:56px}
+  .e1-bar .e1-logo{margin-right:auto}
+  .e1-bar .e1-tag{order:10;margin-left:0;flex:1 1 100%;text-align:center;font-size:10px;padding:5px 8px}
+  .e1-bar .e1-btn.quiet,.e1-bar .e1-btn.chico-bar{padding:0 8px;font-size:13px}
+}
+
+/* ---- Celular: la tabla de empresas del estudio pasa a tarjetas, sin deslizar de lado ---- */
+@media (max-width:699px){
+  .pn-tabla{display:block;min-width:0;width:100%}
+  .pn-tabla thead{display:none}
+  .pn-tabla tbody{display:block}
+  .pn-tabla tr{display:block;padding:12px 14px;border-bottom:1px solid var(--e-line)}
+  .pn-tabla td{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:5px 0;border:0;text-align:right}
+  .pn-tabla td::before{content:attr(data-th);flex:none;font-weight:600;font-size:12px;color:var(--e-mut);text-align:left}
+  .pn-tabla td.pn-nombre{justify-content:flex-start;font-size:16px;text-align:left}
+  .pn-tabla td.pn-nombre::before{content:none}
+  .pn-tabla td.pn-acciones{flex-wrap:wrap;justify-content:flex-start;gap:6px 12px;padding-top:10px}
+  .pn-tabla td.pn-acciones::before{content:none}
+}

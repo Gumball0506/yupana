@@ -32,14 +32,14 @@ async function cargar() {
     <thead><tr><th>Empresa</th><th>RUC</th><th>Periodo</th><th class="n">Comprobantes</th><th class="n">No cuadran</th><th class="n">Pendientes</th>
       <th class="n">IGV bajo revisión</th><th>Último mensaje</th><th>Acceso MYPE</th><th></th></tr></thead>
     <tbody>${empresas.map(e => { const c = e.conciliacion; return `<tr class="${e.activa ? "" : "pn-inactiva"}">
-      <td class="pn-nombre">${esc(e.razon_social)}${e.activa ? "" : ` <span class="e1-rev">Desactivada</span>`}</td><td>${esc(e.ruc)}</td>
-      <td>${c ? esc(c.periodo) : `<span class="e1-rev">${e.cargas ? "Sin conciliar" : "Sin cargas"}</span>`}</td>
-      <td class="n">${c ? c.total : "—"}</td><td class="n">${c ? c.con_diferencia : "—"}</td>
-      <td class="n">${c ? (c.pendientes ? `<span class="e1-st x">${ic("alert")}${c.pendientes}</span>` : `<span class="e1-st ok">${ic("check")}0</span>`) : "—"}</td>
-      <td class="n">${c ? soles(c.igv_revision) : "—"}</td>
-      <td>${e.ultimo_mensaje ? esc(fechaTexto(e.ultimo_mensaje)) : "—"}</td>
-      <td>${e.accesos.length ? esc(e.accesos.join(", ")) : `<button class="e1-link" data-acceso="${e.id}">Dar acceso</button>`}</td>
-      <td>${e.activa ? `<button class="e1-btn t chico" data-abrir="${e.id}">Abrir${ic("arrow")}</button>` : ""}
+      <td class="pn-nombre" data-th="Empresa">${esc(e.razon_social)}${e.activa ? "" : ` <span class="e1-rev">Desactivada</span>`}</td><td data-th="RUC">${esc(e.ruc)}</td>
+      <td data-th="Periodo">${c ? esc(c.periodo) : `<span class="e1-rev">${e.cargas ? "Sin conciliar" : "Sin cargas"}</span>`}</td>
+      <td class="n" data-th="Comprobantes">${c ? c.total : "—"}</td><td class="n" data-th="No cuadran">${c ? c.con_diferencia : "—"}</td>
+      <td class="n" data-th="Pendientes">${c ? (c.pendientes ? `<span class="e1-st x">${ic("alert")}${c.pendientes}</span>` : `<span class="e1-st ok">${ic("check")}0</span>`) : "—"}</td>
+      <td class="n" data-th="IGV bajo revisión">${c ? soles(c.igv_revision) : "—"}</td>
+      <td data-th="Último mensaje">${e.ultimo_mensaje ? esc(fechaTexto(e.ultimo_mensaje)) : "—"}</td>
+      <td data-th="Acceso MYPE">${e.accesos.length ? esc(e.accesos.join(", ")) : `<button class="e1-link" data-acceso="${e.id}">Dar acceso</button>`}</td>
+      <td class="pn-acciones">${e.activa ? `<button class="e1-btn t chico" data-abrir="${e.id}">Abrir${ic("arrow")}</button>` : ""}
         <button class="e1-link" data-editar="${e.id}">Editar</button>
         <button class="e1-link" data-estado="${e.id}">${e.activa ? "Desactivar" : "Reactivar"}</button></td></tr>`; }).join("")}</tbody></table></div>
     <p class="e1-info">«IGV bajo revisión» es una cifra indicativa sujeta a revisión profesional: no es crédito fiscal perdido ni recuperado.</p>`;
