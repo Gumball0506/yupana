@@ -1,15 +1,20 @@
 package pe.yupana.acceso;
 
+import java.time.Clock;
+import java.time.Duration;
 import java.util.List;
 import java.util.Locale;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import pe.yupana.config.PropiedadesYupana;
 import pe.yupana.dominio.ReglaIncumplida;
 import pe.yupana.dominio.Rol;
+import pe.yupana.dominio.Textos;
 import pe.yupana.empresas.ServicioEmpresas;
 import pe.yupana.seguridad.Claves;
+import pe.yupana.seguridad.DemasiadosIntentos;
 import pe.yupana.seguridad.EventoAuditoria;
 import pe.yupana.seguridad.EventoAuditoria.Tipo;
 import pe.yupana.seguridad.Sesion;
@@ -22,28 +27,51 @@ public class ServicioAcceso {
     private static final String CLAVE_INCORRECTA = "Usuario o clave incorrectos.";
     private static final int CLAVE_MINIMA = 8;
     private static final int CLAVE_MAXIMA = 100;
+    private static final int LLAVE_MAXIMA = 64;
     /** Hash de relleno: un usuario inexistente tarda lo mismo que una clave equivocada (no revela qué usuarios existen). */
     private static final String HASH_DE_RELLENO = Claves.cifrar("relleno-para-tiempo-constante");
 
     private final RepositorioUsuarios usuarios;
     private final ServicioEmpresas empresas;
     private final ApplicationEventPublisher eventos;
+    private final LimitadorDeIntentos limitador;
 
-    public ServicioAcceso(RepositorioUsuarios usuarios, ServicioEmpresas empresas, ApplicationEventPublisher eventos) {
+    public ServicioAcceso(RepositorioUsuarios usuarios, ServicioEmpresas empresas, ApplicationEventPublisher eventos,
+                          PropiedadesYupana propiedades, Clock reloj) {
         this.usuarios = usuarios;
         this.empresas = empresas;
         this.eventos = eventos;
+        this.limitador = new LimitadorDeIntentos(propiedades.login().maxIntentos(),
+                Duration.ofMinutes(propiedades.login().bloqueoMinutos()), reloj);
     }
 
-    // ponytail: sin límite de intentos; agregar bloqueo por IP/usuario antes de exponerlo a internet
-    public Sesion ingresar(String usuario, String clave) {
+    /**
+     * Ingreso con bloqueo temporal: tras N fallos seguidos, la cuenta tecleada y la IP quedan bloqueadas un rato. La cuenta
+     * se bloquea aunque no exista, así que el bloqueo no revela qué usuarios hay. Un ingreso correcto reinicia solo el
+     * contador del usuario (no el de la IP, para que quien conoce una cuenta propia no pueda reiniciar su propia cuenta de IP).
+     */
+    public Sesion ingresar(String usuario, String clave, String ip) {
         String nombre = usuario == null ? "" : usuario.strip().toLowerCase(Locale.ROOT);
+        String llaveUsuario = "u:" + Textos.acortar(nombre, LLAVE_MAXIMA);
+        String llaveIp = "i:" + (ip == null || ip.isBlank() ? "desconocida" : Textos.acortar(ip, LLAVE_MAXIMA));
+        long espera = Math.max(limitador.segundosDeBloqueo(llaveUsuario), limitador.segundosDeBloqueo(llaveIp));
+        if (espera > 0) {
+            eventos.publishEvent(new EventoAuditoria(Tipo.INGRESO_BLOQUEADO,
+                    "usuario=" + nombre + " ip=" + llaveIp.substring(2) + " restan_s=" + espera));
+            throw new DemasiadosIntentos(espera);
+        }
         var cuenta = usuarios.buscar(nombre);
         boolean correcta = Claves.coincide(clave == null ? "" : clave, cuenta.map(Usuario::claveCifrada).orElse(HASH_DE_RELLENO));
         if (cuenta.isEmpty() || !correcta) {
             eventos.publishEvent(new EventoAuditoria(Tipo.INGRESO_FALLIDO, "usuario=" + nombre));
+            boolean porUsuario = limitador.registrarFallo(llaveUsuario);
+            boolean porIp = limitador.registrarFallo(llaveIp);
+            if (porUsuario || porIp)
+                eventos.publishEvent(new EventoAuditoria(Tipo.INGRESO_BLOQUEADO,
+                        "bloqueo iniciado usuario=" + nombre + " ip=" + llaveIp.substring(2)));
             throw new SinSesion(CLAVE_INCORRECTA);
         }
+        limitador.registrarExito(llaveUsuario);
         Usuario u = cuenta.get();
         eventos.publishEvent(new EventoAuditoria(Tipo.INGRESO_EXITOSO, "usuario=" + u.usuario() + " rol=" + u.rol()));
         return new Sesion(u.usuario(), u.rol(), u.empresaId());

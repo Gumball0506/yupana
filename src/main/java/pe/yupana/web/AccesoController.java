@@ -34,7 +34,7 @@ class AccesoController {
 
     @PostMapping("/login")
     Yo ingresar(@RequestBody Map<String, String> cuerpo, HttpServletRequest peticion) {
-        Sesion sesion = acceso.ingresar(cuerpo.get("usuario"), cuerpo.get("clave"));
+        Sesion sesion = acceso.ingresar(cuerpo.get("usuario"), cuerpo.get("clave"), peticion.getRemoteAddr());
         HttpSession http = peticion.getSession(true);
         peticion.changeSessionId(); // nuevo identificador tras ingresar: evita la fijación de sesión
         http.setAttribute(ConfiguracionWeb.ATRIBUTO, sesion);

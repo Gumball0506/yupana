@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import pe.yupana.carga.ErrorCarga;
 import pe.yupana.dominio.ReglaIncumplida;
 import pe.yupana.seguridad.AccesoDenegado;
+import pe.yupana.seguridad.DemasiadosIntentos;
 import pe.yupana.seguridad.EmpresaNoElegida;
 import pe.yupana.seguridad.EventoAuditoria;
 import pe.yupana.seguridad.EventoAuditoria.Tipo;
@@ -49,6 +50,12 @@ class ManejadorErrores {
     @ExceptionHandler(SinSesion.class)
     ResponseEntity<CuerpoErrores> sinSesion(SinSesion e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CuerpoErrores.de(e.getMessage()));
+    }
+
+    @ExceptionHandler(DemasiadosIntentos.class)
+    ResponseEntity<CuerpoErrores> demasiadosIntentos(DemasiadosIntentos e) {
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).header("Retry-After", String.valueOf(e.segundosRestantes()))
+                .body(CuerpoErrores.de(e.getMessage()));
     }
 
     @ExceptionHandler(EmpresaNoElegida.class)

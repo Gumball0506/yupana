@@ -13,6 +13,7 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
  * @param maxFilas            tope de filas por archivo (evita agotar memoria con un archivo hostil)
  * @param reinicioHabilitado  si «Reiniciar demo» borra datos; en un servidor público debe estar en false
  * @param semillaClave        clave de los usuarios de demostración que se crean con la base vacía (variable YUPANA_SEED_CLAVE)
+ * @param login               bloqueo temporal tras varios ingresos fallidos, por usuario y por IP (yupana.login.*)
  * @param semillaDatos        si además se cargan y concilian los archivos de ejemplo en la empresa A
  * @param hsts                si las respuestas llevan Strict-Transport-Security (solo cuando se sirve por HTTPS)
  */
@@ -23,5 +24,15 @@ public record PropiedadesYupana(
         @DefaultValue("true") boolean reinicioHabilitado,
         String semillaClave,
         @DefaultValue("false") boolean semillaDatos,
-        @DefaultValue("false") boolean hsts) {
+        @DefaultValue("false") boolean hsts,
+        @DefaultValue Login login) {
+
+    /**
+     * Bloqueo de ingreso (ISO 27001 A.8.5): tras {@code maxIntentos} fallos seguidos se bloquea {@code bloqueoMinutos}.
+     *
+     * @param maxIntentos    ingresos fallidos seguidos que disparan el bloqueo
+     * @param bloqueoMinutos minutos que dura el bloqueo (y la ventana en que se cuentan los fallos)
+     */
+    public record Login(@DefaultValue("5") int maxIntentos, @DefaultValue("15") int bloqueoMinutos) {
+    }
 }
