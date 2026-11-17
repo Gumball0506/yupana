@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Yupana · Cuadra tus compras con el RCE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/yupana-e1.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<symbol id="e-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"></path></symbol>
+<symbol id="e-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></symbol>
+<symbol id="e-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 7.8v.1"></path></symbol>
+</defs></svg>
+
+<div class="e1">
+  <header class="e1-bar">
+    <a class="e1-logo" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="6" fill="#1a1712"></rect><circle cx="8" cy="8" r="2.2" fill="#f7f5f0"></circle><circle cx="16" cy="8" r="2.2" fill="#f7f5f0"></circle><circle cx="8" cy="16" r="2.2" fill="#f7f5f0"></circle><circle cx="16" cy="16" r="2.2" fill="#e0643a"></circle></svg>Yupana</a>
+    <span class="e1-tag">Demo · datos ficticios</span>
+    <a class="e1-btn chico-bar" href="/login.html" data-cta="barra">Ingresar a la demo</a>
+  </header>
+
+  <main class="e1-wrap">
+    <section class="lp-hero">
+      <div>
+        <p class="e1-meta">Versión 5 · Curso Tecnología E-Business · UNFV 2026-II</p>
+        <h1 class="e1-h1">Cuadra tus compras con la propuesta RCE antes de cerrar el mes.</h1>
+        <p class="e1-sub">Yupana cruza tu registro de compras con la propuesta RCE, comprobante por comprobante,
+          te muestra cuáles no cuadran y te avisa qué revisar. Reglas fijas, sin IA y sin pedir tu clave SOL.</p>
+        <div class="e1-acts">
+          <a class="e1-btn t" href="/login.html" data-cta="hero">Ingresar a la demo<svg class="ic" aria-hidden="true"><use href="#e-arrow"></use></svg></a>
+          <a class="e1-btn sec" href="#como">Ver cómo funciona</a>
+        </div>
+      </div>
+      <figure class="lp-ejemplo" aria-label="Ejemplo con los archivos de demostración">
+        <p class="e1-meta">Ejemplo con los archivos de demostración</p>
+        <p class="lp-tit"><em>3 de 10</em> comprobantes no cuadran con la propuesta del RCE.</p>
+        <div class="e1-map" role="img" aria-label="10 comprobantes: 7 cuadran y 3 tienen diferencia (03, 07, 09)">
+          <span>01</span><span>02</span><span class="x">03</span><span>04</span><span>05</span><span>06</span><span class="x">07</span><span>08</span><span class="x">09</span><span>10</span>
+        </div>
+        <div class="e1-igv">
+          <p class="lab">IGV bajo revisión (demo)</p>
+          <p class="amt">S/ 311.40</p>
+          <p class="fine">Cifra indicativa sujeta a revisión profesional: no es crédito fiscal perdido ni recuperado.</p>
+        </div>
+      </figure>
+    </section>
+
+    <section id="como">
+      <div class="e1-sec"><h2>Cómo funciona</h2></div>
+      <ol class="lp-pasos">
+        <li><span class="n">1</span><h3>Carga</h3><p>Sube tus compras y la propuesta RCE en CSV o Excel. Si falta una columna o un importe está mal, te dice la fila y la celda exacta.</p></li>
+        <li><span class="n">2</span><h3>Concilia</h3><p>Cruza por RUC + tipo + serie + número y coteja fecha, base, IGV y total con tolerancia de S/ 0.01.</p></li>
+        <li><span class="n">3</span><h3>Revisa</h3><p>Cada caso que no cuadra se marca como <b>Confirmado</b> u <b>Observado</b>, con nota. El estado queda guardado.</p></li>
+        <li><span class="n">4</span><h3>Aviso del día</h3><p>Un resumen con los casos pendientes y el enlace a cada uno. En la demo es una vista previa: no se envía.</p></li>
+      </ol>
+    </section>
+
+    <section>
+      <div class="e1-sec"><h2>Cómo llega a las empresas</h2></div>
+      <div class="lp-dos">
+        <div class="e1-card"><h3>Canal propio</h3><p class="desc">La MYPE entra directo, prueba la demo y habilita su acceso con Yupana.</p></div>
+        <div class="e1-card"><h3>Canal de socios</h3><p class="desc">Los estudios contables acercan Yupana a las MYPE que ya atienden.</p></div>
+      </div>
+      <div class="lp-flujo" role="img" aria-label="Recorrido: Yupana entrega la herramienta al estudio contable, que concilia para cada MYPE cliente">
+        <div><b>Yupana</b><span>herramienta de conciliación</span></div>
+        <svg class="ic" aria-hidden="true"><use href="#e-arrow"></use></svg>
+        <div><b>Estudio contable</b><span>concilia y revisa por cliente</span></div>
+        <svg class="ic" aria-hidden="true"><use href="#e-arrow"></use></svg>
+        <div><b>MYPE</b><span>recibe el aviso y los casos</span></div>
+      </div>
+      <figure class="lp-boceto">
+        <figcaption><span class="e1-tag">Ya disponible en la versión 5</span> Panel multiempresa del estudio contable</figcaption>
+        <div class="e1-scroll"><table class="e1-data">
+          <thead><tr><th>Empresa (ficticia)</th><th>RUC</th><th>Periodo</th><th class="n">Comprobantes</th><th class="n">Por revisar</th></tr></thead>
+          <tbody>
+            <tr><td>Comercial Demo A</td><td>20999910021</td><td>2026-10</td><td class="n">10</td><td class="n">3</td></tr>
+            <tr><td>Servicios Demo B</td><td>20999910022</td><td>2026-10</td><td class="n">24</td><td class="n">0</td></tr>
+            <tr><td>Taller Demo C</td><td>20999910023</td><td>2026-10</td><td class="n">7</td><td class="n">1</td></tr>
+          </tbody>
+        </table></div>
+      </figure>
+    </section>
+
+    <section>
+      <div class="e1-sec"><h2>Planes (modelo referencial)</h2></div>
+      <div class="lp-planes">
+        <div class="e1-card"><h3>Starter</h3><p class="lp-precio">S/59*</p></div>
+        <div class="e1-card"><h3>Pro</h3><p class="lp-precio">S/149*</p></div>
+        <div class="e1-card"><h3>Estudio</h3><p class="lp-precio">S/349*</p><p class="desc">Para estudios contables (canal de socios).</p></div>
+      </div>
+      <p class="e1-info">* Precios del modelo académico previo, todavía sujetos a validación. El MVP NO cobra ni implementa límites por plan.</p>
+      <div class="e1-card lp-cont">
+        <h3>Programa de Continuidad Yupana</h3>
+        <p class="desc">Acompañamiento y soporte: activación asistida, soporte, seguimiento y actualización. Sin niveles, puntos ni premios.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="e1-sec"><h2>Límites de esta demo</h2></div>
+      <ul class="lp-limites">
+        <li>Solo datos ficticios (RUC 209999100xx). No uses comprobantes reales.</li>
+        <li>No se conecta con SUNAT, no pide clave SOL y ningún botón presenta nada.</li>
+        <li>Usa el formato normalizado de 8 columnas; la exportación oficial de SUNAT aún no tiene adaptador.</li>
+        <li>Importes de 0 o más: las notas de crédito con importes negativos no están soportadas.</li>
+        <li>El aviso del día es una vista previa manual: no se envía por correo ni por WhatsApp.</li>
+      </ul>
+    </section>
+
+    <div class="lp-final">
+      <a class="e1-btn t" href="/login.html" data-cta="final">Ingresar a la demo<svg class="ic" aria-hidden="true"><use href="#e-arrow"></use></svg></a>
+    </div>
+
+    <p class="e1-foot"><svg class="ic" aria-hidden="true"><use href="#e-info"></use></svg><span>Proyecto académico. La cifra de IGV bajo revisión es indicativa y no es crédito fiscal perdido ni recuperado.</span></p>
+  </main>
+</div>
+
+<script src="/js/landing.js"></script>
+</body>
+</html>

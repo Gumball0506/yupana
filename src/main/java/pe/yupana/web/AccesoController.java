@@ -1,0 +1,55 @@
+package pe.yupana.web;
+
+import java.util.Map;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
+import pe.yupana.acceso.ServicioAcceso;
+import pe.yupana.empresas.Empresa;
+import pe.yupana.empresas.ServicioEmpresas;
+import pe.yupana.seguridad.Sesion;
+
+@RestController
+@RequestMapping("/api")
+class AccesoController {
+
+    /** Quién soy y qué empresa tengo activa (null si el estudio aún no eligió). */
+    record Yo(String usuario, String rol, Empresa empresa) {}
+
+    private final ServicioAcceso acceso;
+    private final ServicioEmpresas empresas;
+
+    AccesoController(ServicioAcceso acceso, ServicioEmpresas empresas) {
+        this.acceso = acceso;
+        this.empresas = empresas;
+    }
+
+    @PostMapping("/login")
+    Yo ingresar(@RequestBody Map<String, String> cuerpo, HttpServletRequest peticion) {
+        Sesion sesion = acceso.ingresar(cuerpo.get("usuario"), cuerpo.get("clave"));
+        HttpSession http = peticion.getSession(true);
+        peticion.changeSessionId(); // nuevo identificador tras ingresar: evita la fijación de sesión
+        http.setAttribute(ConfiguracionWeb.ATRIBUTO, sesion);
+        return yo(sesion);
+    }
+
+    @PostMapping("/logout")
+    ResponseEntity<Void> salir(HttpSession http) {
+        http.invalidate();
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/yo")
+    Yo yo(Sesion sesion) {
+        Empresa empresa = sesion.empresaId() == null ? null : empresas.buscar(sesion.empresaId()).orElse(null);
+        return new Yo(sesion.usuario(), sesion.rol().name(), empresa);
+    }
+}

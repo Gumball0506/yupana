@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Yupana · Panel del estudio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/yupana-e1.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<symbol id="e-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"></path></symbol>
+<symbol id="e-alert" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"></path><path d="M12 10v4M12 17.2v.1"></path></symbol>
+<symbol id="e-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></symbol>
+<symbol id="e-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"></path></symbol>
+<symbol id="e-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 7.8v.1"></path></symbol>
+</defs></svg>
+
+<div class="e1">
+  <header class="e1-bar">
+    <a class="e1-logo" href="/panel.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="6" fill="#1a1712"></rect><circle cx="8" cy="8" r="2.2" fill="#f7f5f0"></circle><circle cx="16" cy="8" r="2.2" fill="#f7f5f0"></circle><circle cx="8" cy="16" r="2.2" fill="#f7f5f0"></circle><circle cx="16" cy="16" r="2.2" fill="#e0643a"></circle></svg>Yupana</a>
+    <nav class="e1-crumb" aria-label="Ubicación"><b>Panel del estudio</b></nav>
+    <span class="e1-tag">Demo · datos ficticios</span>
+    <span class="e1-user" id="usuario"></span>
+    <button class="e1-btn quiet" id="salir">Salir</button>
+  </header>
+
+  <main class="e1-wrap">
+    <section class="e1-intro">
+      <p class="e1-meta">Versión 5 · Estudio contable</p>
+      <h1 class="e1-h1">Tus empresas</h1>
+      <p class="e1-sub">Cada empresa tiene sus propias cargas, conciliaciones, casos y chat. Nada se cruza entre empresas.</p>
+    </section>
+
+    <div class="e1-stats" id="totales"></div>
+    <div id="empresas"></div>
+
+    <div class="e1-sec"><h2>Nueva empresa</h2></div>
+    <p class="e1-info">El RUC se valida como lo hace SUNAT: 11 dígitos y un dígito verificador. En esta demo solo se aceptan RUC ficticios que empiezan con 209999100.</p>
+    <div class="pn-nueva">
+      <form class="e1-card pn-form" id="form-empresa">
+        <label class="e1-lbl" for="ruc">RUC</label>
+        <div class="pn-ruc"><input class="e1-in mono" id="ruc" inputmode="numeric" maxlength="11" required placeholder="20999910042">
+          <button type="button" class="e1-btn sec" id="ruc-libre">Usar uno libre</button></div>
+        <label class="e1-lbl" for="razon">Razón social</label>
+        <input class="e1-in" id="razon" maxlength="100" required placeholder="Bodega Demo D S.A.C.">
+        <label class="e1-lbl" for="telefono">WhatsApp de la empresa (opcional)</label>
+        <input class="e1-in mono" id="telefono" inputmode="tel" maxlength="15" placeholder="51999999999">
+        <p class="e1-info">Solo dígitos con código de país (Perú = 51). Sirve para abrir el chat en WhatsApp con wa.me; nada se envía solo.</p>
+        <div id="msg-empresa" aria-live="polite"></div>
+        <button class="e1-btn t" type="submit">Crear empresa</button>
+      </form>
+      <section class="e1-card pn-leccion" aria-labelledby="leccion-t">
+        <h3 id="leccion-t">Cómo se valida un RUC</h3>
+        <div id="leccion"></div>
+      </section>
+    </div>
+
+    <p class="e1-note">Demo con datos ficticios. No se solicita clave SOL ni se conecta con SUNAT. El panel multiempresa es la versión 5 del MVP académico.</p>
+  </main>
+
+  <dialog class="e1-dlg" id="dlg-acceso" aria-labelledby="acc-t">
+    <form class="e1-dlg-in" id="form-acceso">
+      <h3 id="acc-t">Acceso para la MYPE</h3>
+      <p class="e1-info" id="acc-empresa"></p>
+      <label class="e1-lbl" for="acc-usuario">Usuario</label>
+      <input class="e1-in" id="acc-usuario" maxlength="40" required autocapitalize="none" placeholder="mype.d">
+      <label class="e1-lbl" for="acc-clave">Clave (mín. 8 caracteres)</label>
+      <input class="e1-in" id="acc-clave" type="password" minlength="8" maxlength="100" required autocomplete="new-password">
+      <p class="e1-info">La MYPE solo verá su empresa: sus casos para confirmar u observar y el chat con el estudio.</p>
+      <div id="msg-acceso" aria-live="polite"></div>
+      <div class="e1-dlg-acts">
+        <button type="button" class="e1-btn quiet" data-cerrar>Cancelar</button>
+        <button type="submit" class="e1-btn t">Crear acceso</button>
+      </div>
+    </form>
+  </dialog>
+</div>
+
+<script src="/js/panel.js"></script>
+</body>
+</html>
