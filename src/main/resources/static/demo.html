@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/yupana-e1.css">
 </head>
-<body>
+<body class="yp-app">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
 <symbol id="e-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"></path></symbol>
 <symbol id="e-alert" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"></path><path d="M12 10v4M12 17.2v.1"></path></symbol>
@@ -27,57 +27,65 @@
   <header class="e1-bar">
     <a class="e1-logo" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="6" fill="#1a1712"></rect><circle cx="8" cy="8" r="2.2" fill="#f7f5f0"></circle><circle cx="16" cy="8" r="2.2" fill="#f7f5f0"></circle><circle cx="8" cy="16" r="2.2" fill="#f7f5f0"></circle><circle cx="16" cy="16" r="2.2" fill="#e0643a"></circle></svg>Yupana</a>
     <nav class="e1-crumb" aria-label="Ubicación" id="crumb"></nav>
-    <span class="e1-user" id="usuario"></span>
-    <button class="e1-btn quiet ch-abrir" id="btn-chat" type="button"><svg class="ic" aria-hidden="true"><use href="#e-chat"></use></svg>Chat<span class="ch-badge" id="chat-badge" hidden></span></button>
-    <a class="e1-btn quiet" id="a-panel" href="/panel.html">Panel</a>
-    <a class="e1-btn quiet" href="/clave.html">Cambiar clave</a>
-    <button class="e1-btn quiet" id="salir">Salir</button>
+    <div class="yp-nav">
+      <span class="e1-user" id="usuario"></span>
+      <button class="e1-btn quiet ch-abrir" id="btn-chat" type="button"><svg class="ic" aria-hidden="true"><use href="#e-chat"></use></svg>Chat<span class="ch-badge" id="chat-badge" hidden></span></button>
+      <a class="e1-btn quiet" id="a-panel" href="/panel.html">Empresas</a>
+      <a class="e1-btn quiet" href="/clave.html">Cambiar clave</a>
+      <button class="e1-btn quiet" id="salir">Salir</button>
+    </div>
   </header>
 
   <main class="e1-wrap">
     <section class="e1-intro">
       <p class="e1-meta"><span id="empresa-nombre"></span></p>
-      <h1 class="e1-h1">Carga, conciliación y revisión</h1>
-      <p class="e1-sub">Sube tus compras y la propuesta RCE. Validamos el formato, cruzamos ambos lotes comprobante por comprobante y te avisamos qué casos revisar.</p>
+      <h1 class="e1-h1">Conciliación de compras</h1>
+      <p class="e1-sub">Selecciona el periodo y carga tus archivos de compras y RCE.</p>
     </section>
 
-    <div class="e1-periodo" id="selector-periodo" hidden>
-      <label class="e1-lbl" for="periodo-carga">Periodo tributario</label>
-      <input class="e1-in" type="month" id="periodo-carga" required disabled>
-      <p class="e1-info" id="estado-periodo" role="status"></p>
-    </div>
+    <section class="yp-upload" aria-labelledby="titulo-cargas">
+      <div class="yp-upload-bar">
+        <div>
+          <h2 id="titulo-cargas">Archivos del periodo</h2>
+          <div class="e1-periodo" id="selector-periodo" hidden>
+            <label class="e1-lbl" for="periodo-carga">Periodo tributario</label>
+            <input class="e1-in" type="month" id="periodo-carga" required disabled>
+            <p class="e1-info" id="estado-periodo" role="status"></p>
+          </div>
 
-    <div class="e1-acts">
-      <details class="e1-menu" data-solo-demo hidden>
-        <summary class="e1-btn sec">Ejemplos ▾</summary>
-        <div class="e1-menu-lista">
-          <button id="btn-ejemplos" type="button">Ejemplo básico (10 comprobantes)</button>
-          <button id="btn-faltantes" type="button">Ejemplo con faltantes</button>
-          <button id="btn-100" type="button">Ejemplo de 100 comprobantes</button>
         </div>
-      </details>
-      <details class="e1-menu">
-        <summary class="e1-btn sec"><svg class="ic" aria-hidden="true"><use href="#e-down"></use></svg>Descargar ▾</summary>
-        <div class="e1-menu-lista">
-          <a href="/plantilla/plantilla_yupana.xlsx" download data-plantilla="xlsx">Plantilla Excel</a>
-          <a href="/plantilla/plantilla_yupana.csv" download data-plantilla="csv">Plantilla CSV</a>
-          <a href="/ejemplos/yupana_compras_demo.xlsx" download data-solo-demo hidden data-plantilla="ejemplo_xlsx">Ejemplo Excel lleno (10 filas)</a>
+        <div class="e1-acts">
+          <details class="e1-menu" data-solo-demo hidden>
+            <summary class="e1-btn sec">Ejemplos ▾</summary>
+            <div class="e1-menu-lista">
+              <button id="btn-ejemplos" type="button">Ejemplo básico (10 comprobantes)</button>
+              <button id="btn-faltantes" type="button">Ejemplo con faltantes</button>
+              <button id="btn-100" type="button">Ejemplo de 100 comprobantes</button>
+            </div>
+          </details>
+          <details class="e1-menu">
+            <summary class="e1-btn sec"><svg class="ic" aria-hidden="true"><use href="#e-down"></use></svg>Plantillas ▾</summary>
+            <div class="e1-menu-lista">
+              <a href="/plantilla/plantilla_yupana.xlsx" download data-plantilla="xlsx">Plantilla Excel</a>
+              <a href="/plantilla/plantilla_yupana.csv" download data-plantilla="csv">Plantilla CSV</a>
+              <a href="/ejemplos/yupana_compras_demo.xlsx" download data-solo-demo hidden data-plantilla="ejemplo_xlsx">Ejemplo Excel lleno (10 filas)</a>
+            </div>
+          </details>
         </div>
-      </details>
-    </div>
 
-    <div class="e1-grid" id="tarjetas"></div>
+      </div>
+      <div class="e1-grid" id="tarjetas"></div>
 
-    <div class="e1-go"><button id="btn-cargar" class="e1-btn" disabled>Cargar y conciliar</button>
-      <button id="btn-reiniciar" data-solo-demo hidden class="e1-btn sec" title="Borra los archivos, conciliaciones, casos y chat de esta empresa"><svg class="ic" aria-hidden="true"><use href="#e-refresh"></use></svg>Limpiar</button></div>
+      <div class="e1-go"><button id="btn-cargar" class="e1-btn" disabled>Cargar y conciliar</button>
+        <button id="btn-reiniciar" data-solo-demo hidden class="e1-btn sec" title="Borra los archivos, conciliaciones, casos y chat de esta empresa"><svg class="ic" aria-hidden="true"><use href="#e-refresh"></use></svg>Limpiar</button></div>
 
-    <section id="conciliacion">
+    </section>
+
+    <section class="yp-results" id="conciliacion">
       <div class="e1-sec">
         <h2>Conciliación</h2>
         <button id="btn-conciliar" class="e1-btn t" disabled>Conciliar<svg class="ic" aria-hidden="true"><use href="#e-arrow"></use></svg></button>
       </div>
-      <p class="e1-info">Cruza la última carga de Compras contra la última Propuesta RCE por RUC + tipo + serie + número,
-        y coteja fecha, base imponible, IGV y total (tolerancia S/ 0.01). Reglas fijas, sin IA.</p>
       <div id="estado-accion" class="e1-msg ok" role="status" hidden></div>
       <div id="panel" aria-live="polite"></div>
     </section>
