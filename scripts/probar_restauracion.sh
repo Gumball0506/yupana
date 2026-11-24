@@ -16,7 +16,7 @@ ultimo="$(ls -1 "${DESTINO:-/respaldos}"/diarios/yupana_*.dump | sort -r | head 
 psql -v ON_ERROR_STOP=1 -d postgres -c "DROP DATABASE IF EXISTS $TEMPORAL" -c "CREATE DATABASE $TEMPORAL"
 sh "$aqui/restaurar.sh" "$ultimo" "$TEMPORAL"
 
-tablas="empresas usuarios importaciones comprobantes conciliaciones resultados diferencias acciones_caso avisos mensajes sire_tickets feedback eventos auditoria"
+tablas="empresas usuarios importaciones archivos_importacion comprobantes conciliaciones resultados diferencias acciones_caso avisos mensajes sire_tickets feedback eventos auditoria"
 fallos=0
 for t in $tablas; do
   real=$(psql -At -d "$PGDATABASE" -c "SELECT COUNT(*) FROM $t")

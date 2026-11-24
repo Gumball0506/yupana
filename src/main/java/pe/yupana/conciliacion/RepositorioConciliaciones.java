@@ -11,4 +11,5 @@ public interface RepositorioConciliaciones {
     Optional<VistaConciliacion> detalle(long empresaId, long id);
 
     Optional<VistaConciliacion> ultima(long empresaId);
+    Optional<VistaConciliacion> ultima(long empresaId, String periodo);
 }

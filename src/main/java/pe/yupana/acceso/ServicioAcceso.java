@@ -131,6 +131,10 @@ public class ServicioAcceso {
         usuarios.crear(new Usuario(usuario, Claves.cifrar(clave), rol, empresaId));
     }
 
+    public boolean existe(String usuario) {
+        return usuarios.existe(usuario);
+    }
+
     public List<String> accesosDe(long empresaId) {
         return usuarios.deEmpresa(empresaId);
     }

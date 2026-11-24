@@ -35,10 +35,16 @@ public class ServicioCargas {
     /** Una transacción: o se guarda todo el lote o nada, y nadie ve una carga a medias. */
     @Transactional
     public long importar(long empresaId, String origen, String nombreArchivo, byte[] contenido) {
+        return importar(empresaId, origen, nombreArchivo, contenido, null);
+    }
+
+    @Transactional
+    public long importar(long empresaId, String origen, String nombreArchivo, byte[] contenido, String periodo) {
         try {
+            PeriodoCarga.validar(periodo);
             exigirOrigenValido(origen);
             Lote lote = validador.validar(lectores.para(nombreArchivo).leer(contenido));
-            long id = repositorio.guardar(empresaId, origen, nombreArchivo, lote);
+            long id = repositorio.guardar(empresaId, origen, nombreArchivo, lote, contenido, periodo);
             eventos.publishEvent(new EventoAuditoria(Tipo.CARGA_ACEPTADA, "empresa=" + empresaId + " origen=" + origen
                     + " archivo=" + nombreArchivo + " filas=" + lote.comprobantes().size()));
             return id;
@@ -57,8 +63,16 @@ public class ServicioCargas {
         return repositorio.detalle(empresaId, id, limiteFilas);
     }
 
+    public Optional<ArchivoImportado> archivo(long empresaId, long id) {
+        return repositorio.archivo(empresaId, id);
+    }
+
     public Map<String, VistaImportacion> ultimas(long empresaId) {
-        return repositorio.ultimas(empresaId);
+        return ultimas(empresaId, null);
+    }
+
+    public Map<String, VistaImportacion> ultimas(long empresaId, String periodo) {
+        return repositorio.ultimas(empresaId, PeriodoCarga.validar(periodo));
     }
 
     public List<ResumenImportacion> historial(long empresaId) {

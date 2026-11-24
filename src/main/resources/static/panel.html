@@ -15,6 +15,8 @@
 <symbol id="e-alert" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"></path><path d="M12 10v4M12 17.2v.1"></path></symbol>
 <symbol id="e-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></symbol>
 <symbol id="e-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"></path></symbol>
+<symbol id="e-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"></path><path d="M13.5 6.5l4 4"></path></symbol>
+<symbol id="e-power" viewBox="0 0 24 24"><path d="M12 3v8"></path><path d="M7 6.5a7 7 0 1 0 10 0"></path></symbol>
 <symbol id="e-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 7.8v.1"></path></symbol>
 </defs></svg>
 
@@ -22,7 +24,6 @@
   <header class="e1-bar">
     <a class="e1-logo" href="/panel.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="6" fill="#1a1712"></rect><circle cx="8" cy="8" r="2.2" fill="#f7f5f0"></circle><circle cx="16" cy="8" r="2.2" fill="#f7f5f0"></circle><circle cx="8" cy="16" r="2.2" fill="#f7f5f0"></circle><circle cx="16" cy="16" r="2.2" fill="#e0643a"></circle></svg>Yupana</a>
     <nav class="e1-crumb" aria-label="Ubicación"><b>Panel del estudio</b></nav>
-    <span class="e1-tag">Demo · datos ficticios</span>
     <span class="e1-user" id="usuario"></span>
     <a class="e1-btn quiet" href="/clave.html">Cambiar clave</a>
     <button class="e1-btn quiet" id="salir">Salir</button>
@@ -30,35 +31,35 @@
 
   <main class="e1-wrap">
     <section class="e1-intro">
-      <h1 class="e1-h1">Tus empresas</h1>
+      <p class="e1-meta">Versión 5 · Estudio contable</p>
+      <div class="pn-titulo"><h1 class="e1-h1">Tus empresas</h1>
+        <button class="e1-btn t" id="btn-nueva" type="button">+ Empresa</button></div>
       <p class="e1-sub">Cada empresa tiene sus propias cargas, conciliaciones, casos y chat. Nada se cruza entre empresas.</p>
     </section>
 
     <div class="e1-stats" id="totales"></div>
     <div id="empresas"></div>
 
-    <div class="e1-sec"><h2>Nueva empresa</h2></div>
-    <p class="e1-info">El RUC se valida como lo hace SUNAT: 11 dígitos y un dígito verificador. En esta demo solo se aceptan RUC ficticios que empiezan con 209999100.</p>
-    <div class="pn-nueva">
-      <form class="e1-card pn-form" id="form-empresa">
-        <label class="e1-lbl" for="ruc">RUC</label>
-        <div class="pn-ruc"><input class="e1-in mono" id="ruc" inputmode="numeric" maxlength="11" required placeholder="20999910042">
-          <button type="button" class="e1-btn sec" id="ruc-libre">Usar uno libre</button></div>
-        <label class="e1-lbl" for="razon">Razón social</label>
-        <input class="e1-in" id="razon" maxlength="100" required placeholder="Bodega Demo D S.A.C.">
-        <label class="e1-lbl" for="telefono">WhatsApp de la empresa (opcional)</label>
-        <input class="e1-in mono" id="telefono" inputmode="tel" maxlength="15" placeholder="51999999999">
-        <p class="e1-info">Solo dígitos con código de país (Perú = 51). Sirve para abrir el chat en WhatsApp con wa.me; nada se envía solo.</p>
-        <div id="msg-empresa" aria-live="polite"></div>
-        <button class="e1-btn t" type="submit">Crear empresa</button>
-      </form>
-      <section class="e1-card pn-leccion" aria-labelledby="leccion-t">
-        <h3 id="leccion-t">Cómo se valida un RUC</h3>
-        <div id="leccion"></div>
-      </section>
-    </div>
-
   </main>
+
+  <dialog class="e1-dlg" id="dlg-nueva" aria-labelledby="nueva-t">
+    <form class="e1-dlg-in" id="form-empresa">
+      <h3 id="nueva-t">Nueva empresa</h3>
+      <label class="e1-lbl" for="ruc">RUC</label>
+      <div class="pn-ruc"><input class="e1-in mono" id="ruc" inputmode="numeric" maxlength="11" required pattern="[0-9]{11}">
+        <button type="button" class="e1-btn sec" id="ruc-libre" hidden>Usar uno libre</button></div>
+      <label class="e1-lbl" for="razon">Razón social</label>
+      <input class="e1-in" id="razon" maxlength="100" required placeholder="Bodega Demo D S.A.C.">
+      <label class="e1-lbl" for="telefono">WhatsApp de la empresa (opcional)</label>
+      <input class="e1-in mono" id="telefono" inputmode="tel" maxlength="15" placeholder="51999999999">
+      <p class="e1-info">Solo dígitos con código de país (Perú = 51).</p>
+      <div id="msg-empresa" aria-live="polite"></div>
+      <div class="e1-dlg-acts">
+        <button type="button" class="e1-btn quiet" data-cerrar-nueva>Cancelar</button>
+        <button type="submit" class="e1-btn t">Crear empresa</button>
+      </div>
+    </form>
+  </dialog>
 
   <dialog class="e1-dlg" id="dlg-editar" aria-labelledby="edit-t">
     <form class="e1-dlg-in" id="form-editar">

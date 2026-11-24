@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
+import pe.yupana.carga.ArchivoImportado;
 import pe.yupana.carga.EsquemaArchivo;
 import pe.yupana.carga.Lote;
 import pe.yupana.carga.RepositorioCargas;
@@ -43,18 +44,31 @@ class RepositorioCargasJdbc implements RepositorioCargas {
     }
 
     @Override
-    public long guardar(long empresaId, String origen, String nombreArchivo, Lote lote) {
+    public long guardar(long empresaId, String origen, String nombreArchivo, Lote lote, byte[] contenido, String periodo) {
         var clave = new GeneratedKeyHolder();
-        jdbc.sql("INSERT INTO importaciones(empresa_id, origen, nombre_archivo, fecha, total_filas, advertencias) VALUES (?,?,?,?,?,?)")
-                .params(empresaId, origen, nombreArchivo, ahora(), lote.comprobantes().size(), String.join("\n", lote.advertencias()))
+        jdbc.sql("INSERT INTO importaciones(empresa_id, origen, nombre_archivo, fecha, total_filas, advertencias, periodo) VALUES (?,?,?,?,?,?,?)")
+                .params(empresaId, origen, nombreArchivo, ahora(), lote.comprobantes().size(), String.join("\n", lote.advertencias()), periodo)
                 .update(clave, "id");
         long id = clave.getKey().longValue();
+        jdbc.sql("INSERT INTO archivos_importacion(importacion_id, contenido) VALUES (?,?)")
+                .params(id, contenido).update();
         for (Comprobante c : lote.comprobantes())
             jdbc.sql("INSERT INTO comprobantes(id_importacion," + COLUMNAS_SQL + ") VALUES (?,?,?,?,?,?,?,?,?)")
                     .params(id, c.rucProveedor(), c.tipoComprobante(), c.serie(), c.numero(), c.fechaEmision(),
                             c.baseImponible(), c.igv(), c.total())
                     .update();
         return id;
+    }
+
+    @Override
+    public Optional<ArchivoImportado> archivo(long empresaId, long id) {
+        return jdbc.sql("""
+                SELECT i.nombre_archivo, a.contenido
+                FROM importaciones i JOIN archivos_importacion a ON a.importacion_id = i.id
+                WHERE i.empresa_id = ? AND i.id = ?
+                """).params(empresaId, id)
+                .query((rs, fila) -> new ArchivoImportado(rs.getString("nombre_archivo"), rs.getBytes("contenido")))
+                .optional();
     }
 
     private record Cabecera(long id, String origen, String nombreArchivo, String fecha, int totalFilas, String advertencias) {}
@@ -91,19 +105,25 @@ class RepositorioCargasJdbc implements RepositorioCargas {
     }
 
     @Override
-    public Map<String, VistaImportacion> ultimas(long empresaId) {
+    public Map<String, VistaImportacion> ultimas(long empresaId, String periodo) {
         Map<String, VistaImportacion> ultimas = new LinkedHashMap<>();
         for (String origen : EsquemaArchivo.ORIGENES.keySet())
-            ultimaDe(empresaId, origen).flatMap(id -> detalle(empresaId, id, VISTA_PREVIA)).ifPresent(v -> ultimas.put(origen, v));
+            ultimaDe(empresaId, origen, periodo).flatMap(id -> detalle(empresaId, id, VISTA_PREVIA)).ifPresent(v -> ultimas.put(origen, v));
         return ultimas;
     }
 
     @Override
     public List<ResumenImportacion> historial(long empresaId) {
-        return jdbc.sql("SELECT id, origen, nombre_archivo, fecha, total_filas FROM importaciones WHERE empresa_id = ? ORDER BY id DESC")
+        return jdbc.sql("""
+                SELECT i.id, i.origen, i.nombre_archivo, i.fecha, i.periodo, i.total_filas,
+                       a.importacion_id IS NOT NULL AS archivo_disponible
+                FROM importaciones i LEFT JOIN archivos_importacion a ON a.importacion_id = i.id
+                WHERE i.empresa_id = ? ORDER BY i.id DESC
+                """)
                 .param(empresaId)
                 .query((rs, i) -> new ResumenImportacion(rs.getLong("id"), rs.getString("origen"),
-                        rs.getString("nombre_archivo"), rs.getString("fecha"), rs.getInt("total_filas")))
+                        rs.getString("nombre_archivo"), rs.getString("fecha"), rs.getString("periodo"), rs.getInt("total_filas"),
+                        rs.getBoolean("archivo_disponible")))
                 .list();
     }
 
@@ -118,6 +138,20 @@ class RepositorioCargasJdbc implements RepositorioCargas {
         return jdbc.sql("SELECT id FROM importaciones WHERE empresa_id = ? AND origen = ? ORDER BY id DESC LIMIT 1")
                 .params(empresaId, origen)
                 .query(Long.class).optional();
+    }
+
+    @Override
+    public Optional<Long> ultimaDe(long empresaId, String origen, String periodo) {
+        if (periodo == null) {
+            return jdbc.sql("""
+                    SELECT id FROM importaciones
+                    WHERE empresa_id = ? AND origen = ? AND periodo IS NULL ORDER BY id DESC LIMIT 1
+                    """).params(empresaId, origen).query(Long.class).optional();
+        }
+        return jdbc.sql("""
+                SELECT id FROM importaciones
+                WHERE empresa_id = ? AND origen = ? AND periodo = ? ORDER BY id DESC LIMIT 1
+                """).params(empresaId, origen, periodo).query(Long.class).optional();
     }
 
     @Override

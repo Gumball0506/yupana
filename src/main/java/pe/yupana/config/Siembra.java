@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.env.Environment;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Component;
 
 import pe.yupana.acceso.ServicioAcceso;
@@ -25,8 +27,11 @@ class Siembra implements ApplicationRunner {
     private final ServicioConciliacion conciliacion;
     private final PropiedadesYupana propiedades;
 
+    private final boolean produccion;
+
     Siembra(ServicioEmpresas empresas, ServicioAcceso accesos, ServicioCargas cargas, ServicioConciliacion conciliacion,
-            PropiedadesYupana propiedades) {
+            PropiedadesYupana propiedades, Environment entorno) {
+        this.produccion = entorno.matchesProfiles("produccion");
         this.empresas = empresas;
         this.accesos = accesos;
         this.cargas = cargas;
@@ -35,8 +40,13 @@ class Siembra implements ApplicationRunner {
     }
 
     @Override
+    @Transactional(rollbackFor = IOException.class)
     public void run(ApplicationArguments args) throws IOException {
         if (!empresas.todas().isEmpty() || propiedades.semillaClave() == null || propiedades.semillaClave().isBlank()) return;
+        if (produccion) {
+            if (!accesos.existe("estudio")) accesos.crear("estudio", propiedades.semillaClave(), Rol.ESTUDIO, null);
+            return;
+        }
         long a = empresas.crear("20999910018", "Comercial Demo A S.A.C.", "51900000001", SISTEMA).id();
         empresas.crear("20999910026", "Servicios Demo B E.I.R.L.", null, SISTEMA);
         empresas.crear("20999910034", "Taller Demo C S.R.L.", null, SISTEMA);

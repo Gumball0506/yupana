@@ -65,7 +65,7 @@ class CargaTest {
         // T03: una consulta nueva (como tras recargar) devuelve lo guardado con su origen
         var u = cargas.ultimas(E);
         assertEquals(10, u.get("compras").totalFilas());
-        assertEquals("Propuesta RCE (simulada)", u.get("rce").origenNombre());
+        assertEquals("Propuesta RCE", u.get("rce").origenNombre());
     }
 
     @Test

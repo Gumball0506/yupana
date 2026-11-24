@@ -2,6 +2,7 @@ package pe.yupana.web;
 
 import java.util.Map;
 
+import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,11 +25,16 @@ class AccesoController {
     /** Quién soy y qué empresa tengo activa (null si el estudio aún no eligió). */
     record Yo(String usuario, String rol, Empresa empresa) {}
 
+    record EstadoSesion(String usuario, String rol, Empresa empresa, boolean demo) {}
+
     private final ServicioAcceso acceso;
     private final ServicioEmpresas empresas;
     private final RegistroDeSesiones sesiones;
 
-    AccesoController(ServicioAcceso acceso, ServicioEmpresas empresas, RegistroDeSesiones sesiones) {
+    private final boolean demo;
+
+    AccesoController(ServicioAcceso acceso, ServicioEmpresas empresas, RegistroDeSesiones sesiones, Environment entorno) {
+        this.demo = !entorno.matchesProfiles("produccion");
         this.acceso = acceso;
         this.empresas = empresas;
         this.sesiones = sesiones;
@@ -59,7 +65,12 @@ class AccesoController {
     }
 
     @GetMapping("/yo")
-    Yo yo(Sesion sesion) {
+    EstadoSesion consultarSesion(Sesion sesion) {
+        Yo yo = yo(sesion);
+        return new EstadoSesion(yo.usuario(), yo.rol(), yo.empresa(), demo);
+    }
+
+    private Yo yo(Sesion sesion) {
         Empresa empresa = sesion.empresaId() == null ? null : empresas.buscar(sesion.empresaId()).orElse(null);
         return new Yo(sesion.usuario(), sesion.rol().name(), empresa);
     }

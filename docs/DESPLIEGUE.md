@@ -34,6 +34,13 @@ Los nombres exactos de los menús pueden variar según la versión de Coolify; c
 ## Alternativa sin administrar un servidor (Railway, Render, Fly.io)
 Sirven para publicar rápido: despliegan el `Dockerfile` y ofrecen PostgreSQL administrado. Hay que adaptar dos cosas: definir `YUPANA_DB_URL` (formato `jdbc:postgresql://host:5432/base`), `YUPANA_DB_USUARIO` y `YUPANA_DB_CLAVE` con los datos de su base, y **no usar** los servicios `db`, `respaldo` ni `caddy` del compose (los respaldos los da el servicio). Los planes gratuitos suelen apagar la aplicación por inactividad, lo que no conviene en una exposición: revisa los límites y precios vigentes.
 
+## Operación con datos reales en Render
+
+- Usa una base PostgreSQL con retención adecuada y respaldos. La base gratuita de Render vence a los 30 días. Respalda la base activa antes de cambiar de instancia y conserva también la tabla `archivos_importacion`.
+- En una base nueva, ingresa como `estudio` con la clave inicial `YUPANA_SEED_CLAVE`. En una instalación con empresas existentes, usa la cuenta de estudio que ya tienes y da de alta la empresa real con su RUC.
+- Elige el periodo tributario antes de subir compras y RCE. En el historial puedes ver las cargas válidas por mes y descargar el CSV o Excel original de cada carga nueva. Las cargas previas al cambio aparecen sin periodo y conservan sus filas procesadas.
+- Usa las plantillas de Yupana para preparar el RCE si parte de una exportación con columnas diferentes. La carga manual funciona sin credenciales de SUNAT. Ejecuta `scripts/humo.sh` sobre una base de pruebas, ya que escribe archivos de ejemplo y revisiones.
+
 ## Antes de la exposición
 - Despliega con días de anticipación: el DNS y el certificado pueden tardar.
 - Ten un plan B local (`mvnw spring-boot:run` o `docker compose up`) y capturas.

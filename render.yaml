@@ -37,7 +37,7 @@ services:
         fromDatabase:
           name: yupana-db
           property: password
-      # Clave de estudio.demo y mype.a: Render la genera; la ves en Environment del servicio
+      # Clave inicial de estudio en una instalación nueva. Render la genera en Environment.
       - key: YUPANA_SEED_CLAVE
         generateValue: true
       - key: YUPANA_COOKIE_SECURE

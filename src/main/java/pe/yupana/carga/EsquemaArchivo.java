@@ -15,7 +15,7 @@ public final class EsquemaArchivo {
     public static final Map<String, Integer> LARGO_MAXIMO = Map.of("tipo_comprobante", 30, "serie", 20, "numero", 20);
     public static final Map<String, String> ORIGENES = Map.of(
             "compras", "Compras de la empresa",
-            "rce", "Propuesta RCE (simulada)");
+            "rce", "Propuesta RCE");
 
     private EsquemaArchivo() {}
 

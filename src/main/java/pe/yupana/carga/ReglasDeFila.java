@@ -66,6 +66,6 @@ final class ReglasDeFila {
         BigDecimal total = fila.importe("total");
         if (suma.subtract(total).abs().compareTo(TOLERANCIA_TOTAL) > 0)
             h.advertir("Fila " + fila.n() + ": el total (" + total.toPlainString() + ") no coincide con base + IGV ("
-                    + suma.toPlainString() + "). Revísalo antes de conciliar.");
+                    + suma.toPlainString() + "). Revisa esa fila con el proveedor.");
     }
 }

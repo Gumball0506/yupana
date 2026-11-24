@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -81,6 +82,38 @@ class ApiSeguraTest {
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.errores[0]").value("«Reiniciar demo» está deshabilitado en este entorno."));
         assertEquals(1, jdbc.sql("SELECT COUNT(*) FROM auditoria WHERE evento = 'REINICIO_DENEGADO'").query(Long.class).single());
+    }
+
+    @Test
+    void guardaOriginalYConciliaSoloCargasDelMismoPeriodo() throws Exception {
+        String datos = CABECERA + "20999910001,Factura,F001,000001,2026-11-03,100.00,18.00,118.00\n";
+        String cuerpo = mvc.perform(multipart("/api/cargas").file(csv("compras-nov.csv", datos))
+                .param("origen", "compras").param("periodo", "2026-11"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        long id = ((Number) com.jayway.jsonpath.JsonPath.read(cuerpo, "$.id")).longValue();
+
+        mvc.perform(get("/api/cargas/historial"))
+                .andExpect(jsonPath("$[0].periodo").value("2026-11"))
+                .andExpect(jsonPath("$[0].archivo_disponible").value(true));
+        mvc.perform(get("/api/cargas/{id}/archivo", id)).andExpect(status().isOk())
+                .andExpect(header().exists("Content-Disposition"))
+                .andExpect(content().bytes(datos.getBytes(StandardCharsets.UTF_8)));
+
+        MockHttpSession otra = new MockHttpSession();
+        otra.setAttribute(ConfiguracionWeb.ATRIBUTO, new Sesion("estudio.demo", Rol.ESTUDIO, 2L));
+        mvc.perform(get("/api/cargas/{id}/archivo", id).session(otra)).andExpect(status().isNotFound());
+
+        mvc.perform(multipart("/api/cargas").file(csv("rce-oct.csv", datos))
+                .param("origen", "rce").param("periodo", "2026-10")).andExpect(status().isOk());
+        mvc.perform(post("/api/conciliar").param("periodo", "2026-11")).andExpect(status().isUnprocessableContent());
+        mvc.perform(get("/api/cargas").param("periodo", "2026-11")).andExpect(jsonPath("$.rce").doesNotExist());
+
+        mvc.perform(multipart("/api/cargas").file(csv("rce-nov.csv", datos))
+                .param("origen", "rce").param("periodo", "2026-11")).andExpect(status().isOk());
+        mvc.perform(post("/api/conciliar").param("periodo", "2026-11"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.periodo").value("2026-11"));
+        mvc.perform(get("/api/conciliaciones/ultima").param("periodo", "2026-10"))
+                .andExpect(jsonPath("$.id").doesNotExist());
     }
 
     @Test

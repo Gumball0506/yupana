@@ -8,5 +8,7 @@ public record ResumenImportacion(
         String origen,
         @JsonProperty("nombre_archivo") String nombreArchivo,
         String fecha,
-        @JsonProperty("total_filas") int totalFilas) {
+        String periodo,
+        @JsonProperty("total_filas") int totalFilas,
+        @JsonProperty("archivo_disponible") boolean archivoDisponible) {
 }

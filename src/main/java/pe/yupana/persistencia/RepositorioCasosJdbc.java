@@ -39,12 +39,19 @@ class RepositorioCasosJdbc implements RepositorioCasos {
                 INSERT INTO acciones_caso(id_resultado, accion, nota, fecha, usuario)
                 SELECT rn.id, a.accion, a.nota, a.fecha, a.usuario
                 FROM resultados rn
-                JOIN resultados ro ON ro.id_conciliacion = (SELECT MAX(id) FROM conciliaciones WHERE id < ? AND empresa_id = ?)
+                JOIN conciliaciones actual ON actual.id = rn.id_conciliacion
+                JOIN importaciones ia ON ia.id = actual.id_compras
+                JOIN resultados ro ON ro.id_conciliacion = (
+                    SELECT MAX(anterior.id)
+                    FROM conciliaciones anterior JOIN importaciones ip ON ip.id = anterior.id_compras
+                    WHERE anterior.id < actual.id AND anterior.empresa_id = ?
+                      AND ip.periodo IS NOT DISTINCT FROM ia.periodo
+                )
                      AND ro.ruc_proveedor = rn.ruc_proveedor AND ro.tipo_comprobante = rn.tipo_comprobante
                      AND ro.serie = rn.serie AND ro.numero = rn.numero AND ro.causa = rn.causa
                 JOIN acciones_caso a ON a.id = (SELECT MAX(id) FROM acciones_caso WHERE id_resultado = ro.id)
                 WHERE rn.id_conciliacion = ? AND rn.resultado <> 'CONCILIADO'""")
-                .params(idConciliacion, empresaId, idConciliacion).update();
+                .params(empresaId, idConciliacion).update();
     }
 
     @Override

@@ -79,19 +79,28 @@ class RepositorioConciliacionesJdbc implements RepositorioConciliaciones {
                 .query(Long.class).optional().flatMap(id -> detalle(empresaId, id));
     }
 
+    @Override
+    public Optional<VistaConciliacion> ultima(long empresaId, String periodo) {
+        return jdbc.sql("""
+                SELECT c.id FROM conciliaciones c
+                JOIN importaciones ic ON ic.id = c.id_compras
+                WHERE c.empresa_id = ? AND ic.periodo = ? ORDER BY c.id DESC LIMIT 1
+                """).params(empresaId, periodo).query(Long.class).optional().flatMap(id -> detalle(empresaId, id));
+    }
+
     private record Cabecera(long id, long idCompras, long idRce, String fecha, int total, int conciliados, int conDiferencia,
-                            BigDecimal igvRevision, BigDecimal diferenciaIgv, String archivoCompras, String archivoRce) {}
+                            BigDecimal igvRevision, BigDecimal diferenciaIgv, String archivoCompras, String archivoRce, String periodo) {}
 
     @Override
     public Optional<VistaConciliacion> detalle(long empresaId, long id) {
         return jdbc.sql("""
-                SELECT c.*, ic.nombre_archivo AS archivo_compras, ir.nombre_archivo AS archivo_rce
+                SELECT c.*, ic.periodo, ic.nombre_archivo AS archivo_compras, ir.nombre_archivo AS archivo_rce
                 FROM conciliaciones c JOIN importaciones ic ON ic.id = c.id_compras JOIN importaciones ir ON ir.id = c.id_rce
                 WHERE c.id = ? AND c.empresa_id = ?""").params(id, empresaId)
                 .query((rs, i) -> new Cabecera(rs.getLong("id"), rs.getLong("id_compras"), rs.getLong("id_rce"),
                         rs.getString("fecha"), rs.getInt("total"), rs.getInt("conciliados"), rs.getInt("con_diferencia"),
                         rs.getBigDecimal("igv_revision"), rs.getBigDecimal("diferencia_igv"),
-                        rs.getString("archivo_compras"), rs.getString("archivo_rce")))
+                        rs.getString("archivo_compras"), rs.getString("archivo_rce"), rs.getString("periodo")))
                 .optional()
                 .map(this::armar);
     }
@@ -106,7 +115,7 @@ class RepositorioConciliacionesJdbc implements RepositorioConciliaciones {
                         rs.getBigDecimal("igv_compras"), rs.getBigDecimal("igv_rce")))
                 .list().stream().map(f -> f.aVista(compras, rce, diferenciasDe(f.id()), revisionDe(f.id()))).toList();
         return new VistaConciliacion(c.id(), c.idCompras(), c.idRce(), c.fecha(), c.total(), c.conciliados(), c.conDiferencia(),
-                c.igvRevision(), c.diferenciaIgv(), c.archivoCompras(), c.archivoRce(), resultados, periodoDe(compras));
+                c.igvRevision(), c.diferenciaIgv(), c.archivoCompras(), c.archivoRce(), resultados, c.periodo() == null ? periodoDe(compras) : c.periodo());
     }
 
     private record FilaResultado(long id, long idConciliacion, int orden, String ruc, String tipo, String serie, String numero,

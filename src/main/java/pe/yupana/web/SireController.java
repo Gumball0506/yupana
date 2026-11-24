@@ -3,6 +3,7 @@ package pe.yupana.web;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,7 @@ import pe.yupana.sire.ServicioSire;
 import pe.yupana.sire.VistaTicket;
 
 /** Simulador SIRE: solo para el estudio, siempre sobre la empresa activa. No se conecta con SUNAT. */
+@Profile("!produccion")
 @RestController
 @RequestMapping("/api/sire")
 class SireController {

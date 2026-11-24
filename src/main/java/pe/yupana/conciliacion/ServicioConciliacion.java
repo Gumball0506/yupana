@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import pe.yupana.carga.ErrorCarga;
+import pe.yupana.carga.PeriodoCarga;
 import pe.yupana.carga.RepositorioCargas;
 import pe.yupana.dominio.Conciliador;
 import pe.yupana.dominio.ResultadoComparacion;
@@ -39,8 +40,14 @@ public class ServicioConciliacion {
      */
     @Transactional
     public long conciliar(long empresaId) {
-        long idCompras = ultimaCarga(empresaId, "compras");
-        long idRce = ultimaCarga(empresaId, "rce");
+        return conciliar(empresaId, null);
+    }
+
+    @Transactional
+    public long conciliar(long empresaId, String periodo) {
+        PeriodoCarga.validar(periodo);
+        long idCompras = ultimaCarga(empresaId, "compras", periodo);
+        long idRce = ultimaCarga(empresaId, "rce", periodo);
         List<ResultadoComparacion> resultados =
                 conciliador.comparar(cargas.comprobantes(idCompras), cargas.comprobantes(idRce));
         long id = conciliaciones.guardar(new NuevaConciliacion(empresaId, idCompras, idRce, resultados));
@@ -50,8 +57,8 @@ public class ServicioConciliacion {
         return id;
     }
 
-    private long ultimaCarga(long empresaId, String origen) {
-        return cargas.ultimaDe(empresaId, origen)
+    private long ultimaCarga(long empresaId, String origen, String periodo) {
+        return cargas.ultimaDe(empresaId, origen, periodo)
                 .orElseThrow(() -> new ErrorCarga("Primero carga ambos archivos: Compras y Propuesta RCE."));
     }
 
@@ -61,6 +68,10 @@ public class ServicioConciliacion {
 
     public Optional<VistaConciliacion> ultima(long empresaId) {
         return conciliaciones.ultima(empresaId);
+    }
+
+    public Optional<VistaConciliacion> ultima(long empresaId, String periodo) {
+        return periodo == null ? ultima(empresaId) : conciliaciones.ultima(empresaId, PeriodoCarga.validar(periodo));
     }
 
     public Optional<String> csv(long empresaId, long id) {
