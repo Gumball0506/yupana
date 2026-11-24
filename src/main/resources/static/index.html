@@ -10,7 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/yupana-e1.css">
 </head>
-<body class="yp-app yp-public">
+<body class="yp-app yp-public yp-marketing">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
 <symbol id="e-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"></path></symbol>
 <symbol id="e-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></symbol>
@@ -20,17 +20,18 @@
 <div class="e1">
   <header class="e1-bar">
     <a class="e1-logo" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="6" fill="#1a1712"></rect><circle cx="8" cy="8" r="2.2" fill="#f7f5f0"></circle><circle cx="16" cy="8" r="2.2" fill="#f7f5f0"></circle><circle cx="8" cy="16" r="2.2" fill="#f7f5f0"></circle><circle cx="16" cy="16" r="2.2" fill="#e0643a"></circle></svg>Yupana</a>
+    <nav class="yp-commercial-nav" aria-label="Navegación principal"><a href="#como">Cómo funciona</a><a href="#planes">Planes</a></nav>
     <a class="e1-btn chico-bar sec" href="/login.html" data-cta="barra">Ingresar a Yupana</a>
   </header>
 
   <main class="e1-wrap yp-landing">
     <section class="yp-hero" aria-labelledby="yp-title">
       <div class="yp-hero-copy">
-        <h1 id="yp-title">Cierra el mes con tus compras <em>conciliadas.</em></h1>
-        <p>Compara tus compras con el Registro de Compras Electrónico (RCE), identifica qué comprobantes requieren revisión y guarda tus archivos por empresa y periodo.</p>
+        <h1 id="yp-title">Encuentra las diferencias <em>antes del cierre.</em></h1>
+        <p>Cruza tus compras con el Registro de Compras Electrónico (RCE) y dedica la revisión a los comprobantes que requieren atención. Todo queda organizado por empresa y mes.</p>
         <div class="yp-public-actions">
           <a class="e1-btn t" href="/login.html" data-cta="hero">Ingresar a Yupana <svg class="ic" aria-hidden="true"><use href="#e-arrow"></use></svg></a>
-          <a class="e1-btn sec" href="#como">Ver cómo funciona</a>
+          <a class="e1-btn sec" href="#planes">Explorar planes</a>
         </div>
       </div>
       <figure class="yp-preview">
@@ -65,6 +66,17 @@
         <p>Gestiona tus clientes desde el panel del estudio. Cada empresa tiene su propio historial, conciliaciones y casos por revisar.</p>
       </div>
       <a class="e1-btn t" href="/login.html" data-cta="final">Ingresar a Yupana <svg class="ic" aria-hidden="true"><use href="#e-arrow"></use></svg></a>
+    </section>
+
+    <section id="planes" class="yp-public-section" aria-labelledby="planes-titulo">
+      <h2 id="planes-titulo">Planes Yupana</h2>
+      <p class="yp-price-intro">Conoce la propuesta para empresas y estudios contables.</p>
+      <div class="yp-price-grid">
+        <article><h3>Starter</h3><p class="yp-price"><small>S/</small> 59</p></article>
+        <article><h3>Pro</h3><p class="yp-price"><small>S/</small> 149</p></article>
+        <article><h3>Estudio</h3><p class="yp-price"><small>S/</small> 349</p><p>Para estudios contables que atienden a varias empresas.</p></article>
+      </div>
+      <p class="yp-price-note">Precios referenciales sujetos a validación. Actualmente el acceso a Yupana funciona sin cobros ni límites por plan.</p>
     </section>
 
     <section class="yp-public-section yp-faq" aria-label="Preguntas frecuentes">
