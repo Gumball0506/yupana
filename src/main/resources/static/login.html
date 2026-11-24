@@ -9,23 +9,23 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/yupana-e1.css">
 </head>
-<body>
+<body class="yp-app yp-public yp-login">
 <div class="e1">
   <header class="e1-bar">
     <a class="e1-logo" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="6" fill="#1a1712"></rect><circle cx="8" cy="8" r="2.2" fill="#f7f5f0"></circle><circle cx="16" cy="8" r="2.2" fill="#f7f5f0"></circle><circle cx="8" cy="16" r="2.2" fill="#f7f5f0"></circle><circle cx="16" cy="16" r="2.2" fill="#e0643a"></circle></svg>Yupana</a>
-    <span class="e1-tag">Demo · datos ficticios</span>
+    <a class="e1-btn quiet" href="/">Volver al inicio</a>
   </header>
   <main class="e1-wrap">
     <form class="e1-card lg-form" id="form">
-      <h1 class="e1-h1">Ingresar</h1>
-      <p class="e1-info">Estudio contable: ves todas tus empresas. MYPE: ves solo la tuya y revisas tus casos.</p>
+      <h1 class="e1-h1">Ingresar a Yupana</h1>
+      <p class="e1-info">Accede a tus empresas, archivos y conciliaciones.</p>
       <label class="e1-lbl" for="usuario">Usuario</label>
       <input class="e1-in" id="usuario" autocomplete="username" required maxlength="40" autocapitalize="none">
       <label class="e1-lbl" for="clave">Clave</label>
       <input class="e1-in" id="clave" type="password" autocomplete="current-password" required maxlength="100">
       <div id="msg" aria-live="polite"></div>
       <button class="e1-btn t" type="submit">Ingresar</button>
-      <p class="e1-info">Esta clave es solo de Yupana. Nunca escribas aquí tu clave SOL.</p>
+      <p class="e1-info">Usa la clave de tu cuenta de Yupana.</p>
     </form>
   </main>
 </div>

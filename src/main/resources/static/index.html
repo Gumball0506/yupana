@@ -3,13 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Concilia compras y RCE por empresa y periodo. Revisa diferencias y recupera tus archivos originales en Yupana.">
 <link rel="icon" href="data:,">
 <title>Yupana · Cuadra tus compras con el RCE</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/yupana-e1.css">
 </head>
-<body>
+<body class="yp-app yp-public">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
 <symbol id="e-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"></path></symbol>
 <symbol id="e-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></symbol>
@@ -19,98 +20,57 @@
 <div class="e1">
   <header class="e1-bar">
     <a class="e1-logo" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="6" fill="#1a1712"></rect><circle cx="8" cy="8" r="2.2" fill="#f7f5f0"></circle><circle cx="16" cy="8" r="2.2" fill="#f7f5f0"></circle><circle cx="8" cy="16" r="2.2" fill="#f7f5f0"></circle><circle cx="16" cy="16" r="2.2" fill="#e0643a"></circle></svg>Yupana</a>
-    <a class="e1-btn chico-bar" href="/login.html" data-cta="barra">Ingresar a Yupana</a>
+    <a class="e1-btn chico-bar sec" href="/login.html" data-cta="barra">Ingresar a Yupana</a>
   </header>
 
-  <main class="e1-wrap">
-    <section class="lp-hero">
-      <div>
-        <h1 class="e1-h1">Cuadra tus compras con la propuesta RCE antes de cerrar el mes.</h1>
-        <p class="e1-sub">Yupana cruza tu registro de compras con la propuesta RCE, comprobante por comprobante,
-          te muestra cuáles no cuadran y te avisa qué revisar. Reglas fijas, sin IA y sin pedir tu clave SOL.</p>
-        <div class="e1-acts">
-          <a class="e1-btn t" href="/login.html" data-cta="hero">Ingresar a Yupana<svg class="ic" aria-hidden="true"><use href="#e-arrow"></use></svg></a>
+  <main class="e1-wrap yp-landing">
+    <section class="yp-hero" aria-labelledby="yp-title">
+      <div class="yp-hero-copy">
+        <h1 id="yp-title">Cierra el mes con tus compras <em>conciliadas.</em></h1>
+        <p>Compara tus compras con el Registro de Compras Electrónico (RCE), identifica qué comprobantes requieren revisión y guarda tus archivos por empresa y periodo.</p>
+        <div class="yp-public-actions">
+          <a class="e1-btn t" href="/login.html" data-cta="hero">Ingresar a Yupana <svg class="ic" aria-hidden="true"><use href="#e-arrow"></use></svg></a>
           <a class="e1-btn sec" href="#como">Ver cómo funciona</a>
         </div>
       </div>
-      <figure class="lp-ejemplo" aria-label="Ejemplo con los archivos de demostración">
-        <p class="e1-meta">Ejemplo con los archivos de demostración</p>
-        <p class="lp-tit"><em>3 de 10</em> comprobantes no cuadran con la propuesta del RCE.</p>
-        <div class="e1-map" role="img" aria-label="10 comprobantes: 7 cuadran y 3 tienen diferencia (03, 07, 09)">
-          <span>01</span><span>02</span><span class="x">03</span><span>04</span><span>05</span><span>06</span><span class="x">07</span><span>08</span><span class="x">09</span><span>10</span>
+      <figure class="yp-preview">
+        <figcaption>Vista de ejemplo</figcaption>
+        <h2>Resumen de conciliación</h2>
+        <div class="yp-sample-counts">
+          <div><span>Comprobantes</span><strong>10</strong></div>
+          <div><span>Cuadran</span><strong>7</strong></div>
+          <div><span>Por revisar</span><strong>3</strong></div>
         </div>
-        <div class="e1-igv">
-          <p class="lab">IGV bajo revisión (demo)</p>
-          <p class="amt">S/ 311.40</p>
-          <p class="fine">Cifra indicativa sujeta a revisión profesional: no es crédito fiscal perdido ni recuperado.</p>
-        </div>
+        <div class="yp-progress" aria-hidden="true"></div>
+        <ul class="yp-sample-list" aria-label="Ejemplos de comprobantes">
+          <li><span>Factura F001-003</span><span class="e1-chip">Diferencia de IGV</span></li>
+          <li><span>Factura F001-004</span><span class="e1-chip ok">Cuadra</span></li>
+          <li><span>Factura F001-007</span><span class="e1-chip">Diferencia de total</span></li>
+        </ul>
       </figure>
     </section>
 
-    <section id="como">
-      <div class="e1-sec"><h2>Cómo funciona</h2></div>
-      <ol class="lp-pasos">
-        <li><span class="n">1</span><h3>Carga</h3><p>Sube tus compras y la propuesta RCE en CSV o Excel. Si falta una columna o un importe está mal, te dice la fila y la celda exacta.</p></li>
-        <li><span class="n">2</span><h3>Concilia</h3><p>Cruza por RUC + tipo + serie + número y coteja fecha, base, IGV y total con tolerancia de S/ 0.01.</p></li>
-        <li><span class="n">3</span><h3>Revisa</h3><p>Cada caso que no cuadra se marca como <b>Confirmado</b> u <b>Observado</b>, con nota. El estado queda guardado.</p></li>
-        <li><span class="n">4</span><h3>Aviso del día</h3><p>Un resumen con los casos pendientes y el enlace a cada uno. Puedes consultar el resumen en Yupana.</p></li>
+    <section class="yp-public-section" id="como" aria-labelledby="yp-como">
+      <h2 id="yp-como">Cómo funciona</h2>
+      <ol class="yp-steps">
+        <li><h3>Sube tus archivos</h3><p>Elige la empresa y el periodo. Usa las plantillas CSV o Excel para cargar compras y RCE.</p></li>
+        <li><h3>Revisa las diferencias</h3><p>Compara importes por comprobante y registra una observación o confirmación en cada caso.</p></li>
+        <li><h3>Consulta el historial</h3><p>Vuelve a cualquier mes para revisar las cargas y descargar los archivos originales.</p></li>
       </ol>
     </section>
 
-    <section>
-      <div class="e1-sec"><h2>Cómo llega a las empresas</h2></div>
-      <div class="lp-dos">
-        <div class="e1-card"><h3>Canal propio</h3><p class="desc">La MYPE accede a sus conciliaciones y casos con una cuenta de Yupana.</p></div>
-        <div class="e1-card"><h3>Canal de socios</h3><p class="desc">Los estudios contables acercan Yupana a las MYPE que ya atienden.</p></div>
+    <section class="yp-public-section yp-workspace" aria-labelledby="yp-workspace-title">
+      <div>
+        <h2 id="yp-workspace-title">Un espacio para cada empresa</h2>
+        <p>Gestiona tus clientes desde el panel del estudio. Cada empresa tiene su propio historial, conciliaciones y casos por revisar.</p>
       </div>
-      <div class="lp-flujo" role="img" aria-label="Recorrido: Yupana entrega la herramienta al estudio contable, que concilia para cada MYPE cliente">
-        <div><b>Yupana</b><span>herramienta de conciliación</span></div>
-        <svg class="ic" aria-hidden="true"><use href="#e-arrow"></use></svg>
-        <div><b>Estudio contable</b><span>concilia y revisa por cliente</span></div>
-        <svg class="ic" aria-hidden="true"><use href="#e-arrow"></use></svg>
-        <div><b>MYPE</b><span>recibe el aviso y los casos</span></div>
-      </div>
-      <figure class="lp-boceto">
-        <figcaption>Panel multiempresa del estudio contable</figcaption>
-        <div class="e1-scroll"><table class="e1-data">
-          <thead><tr><th>Empresa (ficticia)</th><th>RUC</th><th>Periodo</th><th class="n">Comprobantes</th><th class="n">Por revisar</th></tr></thead>
-          <tbody>
-            <tr><td>Comercial Demo A</td><td>20999910021</td><td>2026-10</td><td class="n">10</td><td class="n">3</td></tr>
-            <tr><td>Servicios Demo B</td><td>20999910022</td><td>2026-10</td><td class="n">24</td><td class="n">0</td></tr>
-            <tr><td>Taller Demo C</td><td>20999910023</td><td>2026-10</td><td class="n">7</td><td class="n">1</td></tr>
-          </tbody>
-        </table></div>
-      </figure>
+      <a class="e1-btn t" href="/login.html" data-cta="final">Ingresar a Yupana <svg class="ic" aria-hidden="true"><use href="#e-arrow"></use></svg></a>
     </section>
 
-    <section>
-      <div class="e1-sec"><h2>Planes</h2></div>
-      <div class="lp-planes">
-        <div class="e1-card"><h3>Starter</h3><p class="lp-precio">S/59*</p></div>
-        <div class="e1-card"><h3>Pro</h3><p class="lp-precio">S/149*</p></div>
-        <div class="e1-card"><h3>Estudio</h3><p class="lp-precio">S/349*</p><p class="desc">Para estudios contables (canal de socios).</p></div>
-      </div>
-      <p class="e1-info">* Precios del modelo académico previo, todavía sujetos a validación. El MVP NO cobra ni implementa límites por plan.</p>
-      <div class="e1-card lp-cont">
-        <h3>Programa de Continuidad Yupana</h3>
-        <p class="desc">Acompañamiento y soporte: activación asistida, soporte, seguimiento y actualización. Sin niveles, puntos ni premios.</p>
-      </div>
+    <section class="yp-public-section yp-faq" aria-label="Preguntas frecuentes">
+      <details><summary>¿Qué formato deben tener los archivos?</summary><p>Las plantillas de Yupana incluyen las ocho columnas requeridas. Si tu exportación del RCE viene con otras columnas, adapta el archivo antes de subirlo. Se admiten importes desde cero.</p></details>
+      <details><summary>¿Necesito mi clave SOL?</summary><p>Solo necesitas tu cuenta de Yupana. Descarga la propuesta RCE desde SUNAT y súbela al periodo correspondiente.</p></details>
     </section>
-
-    <section>
-      <div class="e1-sec"><h2>Alcance del sistema</h2></div>
-      <ul class="lp-limites">
-        <li>Admite archivos de compras y del RCE para conciliación interna.</li>
-        <li>Usa el formato normalizado de 8 columnas; la exportación oficial de SUNAT aún no tiene adaptador.</li>
-        <li>Importes de 0 o más: las notas de crédito con importes negativos no están soportadas.</li>
-        <li>El aviso del día es una vista previa manual: no se envía por correo ni por WhatsApp.</li>
-      </ul>
-    </section>
-
-    <div class="lp-final">
-      <a class="e1-btn t" href="/login.html" data-cta="final">Ingresar a Yupana<svg class="ic" aria-hidden="true"><use href="#e-arrow"></use></svg></a>
-    </div>
-
   </main>
 </div>
 
