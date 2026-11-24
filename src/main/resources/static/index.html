@@ -8,7 +8,7 @@
 <title>Yupana · Cuadra tus compras con el RCE</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/yupana-e1.css?v=recorrido1">
+<link rel="stylesheet" href="/css/yupana-e1.css?v=recorrido2">
 </head>
 <body class="yp-app yp-public yp-marketing">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -31,7 +31,7 @@
         <p>Cruza tus compras con el Registro de Compras Electrónico (RCE) y dedica la revisión a los comprobantes que requieren atención. Todo queda organizado por empresa y mes.</p>
         <div class="yp-public-actions">
           <a class="e1-btn t" href="/login.html" data-cta="hero">Ingresar a Yupana <svg class="ic" aria-hidden="true"><use href="#e-arrow"></use></svg></a>
-          <a class="e1-btn sec" href="#planes">Explorar planes</a>
+          <a class="e1-btn sec" href="#recorrido">Ver demostración</a>
         </div>
       </div>
       <figure class="yp-preview">
@@ -52,21 +52,50 @@
     </section>
 
     <section class="yp-public-section" id="como" aria-labelledby="yp-como">
-      <h2 id="yp-como">Cómo funciona</h2>
-      <div class="yp-tour" id="recorrido" role="region" aria-label="Recorrido de Yupana">
-        <p class="yp-tour-intro">Explora tres pantallas de Yupana con una empresa de ejemplo.</p>
-        <div class="yp-tour-controls" aria-label="Elegir pantalla" hidden>
-          <button type="button" aria-controls="tour-empresas" aria-pressed="true">Empresas</button>
-          <button type="button" aria-controls="tour-cargas" aria-pressed="false">Cargas</button>
-          <button type="button" aria-controls="tour-historial" aria-pressed="false">Historial</button>
+      <h2 id="yp-como">Yupana en acción</h2>
+      <div class="yp-tour" id="recorrido" role="region" aria-label="Demostración de Yupana">
+        <p class="yp-tour-intro">Recorre el cierre de compras con una empresa de ejemplo.</p>
+        <div class="yp-tour-controls" hidden>
+          <button type="button" class="yp-tour-toggle">Pausar</button>
+          <div class="yp-tour-steps" role="group" aria-label="Elegir pantalla">
+            <button type="button" aria-controls="tour-empresas" aria-pressed="true">Empresas</button>
+            <button type="button" aria-controls="tour-cargas" aria-pressed="false">Carga mensual</button>
+            <button type="button" aria-controls="tour-resultados" aria-pressed="false">Diferencias</button>
+            <button type="button" aria-controls="tour-historial" aria-pressed="false">Historial</button>
+          </div>
+          <div class="yp-tour-arrows" role="group" aria-label="Cambiar pantalla">
+            <button type="button" data-tour-step="-1" aria-label="Pantalla anterior">←</button>
+            <button type="button" data-tour-step="1" aria-label="Pantalla siguiente">→</button>
+          </div>
         </div>
-        <figure id="tour-empresas"><figcaption><h3>Elige la empresa que vas a revisar</h3><p>Busca por razón social o RUC y consulta sus casos pendientes antes de abrir el periodo.</p></figcaption>
-          <a href="/recorrido/empresas.jpg" aria-label="Ampliar captura del panel de empresas"><img loading="lazy" src="/recorrido/empresas.jpg" alt="Panel del estudio con indicadores y tarjetas por empresa"></a></figure>
-        <figure id="tour-cargas"><figcaption><h3>Carga las compras y el RCE del mes</h3><p>Elige el periodo y sube ambos archivos. La conciliación te indica qué comprobantes requieren atención.</p></figcaption>
-          <a href="/recorrido/cargas.jpg" aria-label="Ampliar captura de la carga mensual"><img loading="lazy" src="/recorrido/cargas.jpg" alt="Selector de periodo y áreas de carga para compras y propuesta RCE"></a></figure>
-        <figure id="tour-historial"><figcaption><h3>Recupera el archivo original</h3><p>Abre el historial del mes para ver qué se importó y descargar la misma versión que subiste.</p></figcaption>
-          <a href="/recorrido/historial.jpg" aria-label="Ampliar captura del historial"><img loading="lazy" src="/recorrido/historial.jpg" alt="Historial mensual con nombre de archivo y enlace para descargar el original"></a></figure>
+        <div class="yp-tour-slides">
+          <figure id="tour-empresas">
+            <figcaption><h3>Encuentra la empresa que vas a revisar</h3><p>Busca por razón social o RUC y consulta los casos pendientes de cada cliente.</p></figcaption>
+            <a href="/recorrido/empresas.webp" aria-label="Ampliar captura del panel de empresas"><img loading="lazy" src="/recorrido/empresas.webp" alt="Panel del estudio con indicadores y tarjetas por empresa"></a>
+          </figure>
+          <figure id="tour-cargas">
+            <figcaption><h3>Carga las compras y el RCE del mes</h3><p>Selecciona el periodo y sube los dos archivos en CSV o Excel.</p></figcaption>
+            <a href="/recorrido/cargas.webp" aria-label="Ampliar captura de la carga mensual"><img loading="lazy" src="/recorrido/cargas.webp" alt="Selector de periodo y áreas de carga para compras y propuesta RCE"></a>
+          </figure>
+          <figure id="tour-resultados">
+            <figcaption><h3>Revisa las diferencias por comprobante</h3><p>Ubica los casos pendientes y compara los importes del archivo de compras con los del RCE.</p></figcaption>
+            <a href="/recorrido/resultados.webp" aria-label="Ampliar captura de los resultados"><img loading="lazy" src="/recorrido/resultados.webp" alt="Resumen de conciliación con comprobantes que cuadran y casos por revisar"></a>
+          </figure>
+          <figure id="tour-historial">
+            <figcaption><h3>Recupera los archivos originales</h3><p>Consulta qué se importó en cada mes y descarga la misma versión que subiste.</p></figcaption>
+            <a href="/recorrido/historial.webp" aria-label="Ampliar captura del historial"><img loading="lazy" src="/recorrido/historial.webp" alt="Historial mensual con nombres de archivo y enlaces de descarga"></a>
+          </figure>
+        </div>
       </div>
+    </section>
+
+    <section class="yp-public-section" aria-labelledby="yp-beneficios">
+      <h2 id="yp-beneficios">Qué puedes hacer con Yupana</h2>
+      <ul class="yp-steps yp-benefits">
+        <li><h3>Detecta errores de carga</h3><p>Identifica las filas que debes corregir antes de cruzar tus archivos.</p></li>
+        <li><h3>Deja constancia de la revisión</h3><p>Confirma u observa cada caso y guarda una nota para retomarlo después.</p></li>
+        <li><h3>Exporta los resultados</h3><p>Descarga la conciliación en CSV para trabajarla en una hoja de cálculo.</p></li>
+      </ul>
     </section>
 
     <section class="yp-public-section yp-workspace" aria-labelledby="yp-workspace-title">
@@ -88,13 +117,20 @@
       <p class="yp-price-note">Precios referenciales sujetos a validación. Actualmente el acceso a Yupana funciona sin cobros ni límites por plan.</p>
     </section>
 
-    <section class="yp-public-section yp-faq" aria-label="Preguntas frecuentes">
+    <section class="yp-public-section yp-faq" aria-labelledby="yp-faq-title">
+      <h2 id="yp-faq-title">Preguntas frecuentes</h2>
       <details><summary>¿Qué formato deben tener los archivos?</summary><p>Las plantillas de Yupana incluyen las ocho columnas requeridas. Si tu exportación del RCE viene con otras columnas, adapta el archivo antes de subirlo. Se admiten importes desde cero.</p></details>
       <details><summary>¿Necesito mi clave SOL?</summary><p>Solo necesitas tu cuenta de Yupana. Descarga la propuesta RCE desde SUNAT y súbela al periodo correspondiente.</p></details>
+      <details><summary>¿Puedo gestionar varias empresas?</summary><p>Sí. El panel del estudio te permite abrir cada empresa por separado y consultar sus conciliaciones y archivos por periodo.</p></details>
+      <details><summary>¿Puedo volver a descargar mis archivos?</summary><p>Sí. El historial de importaciones muestra los archivos guardados por periodo y ofrece la descarga del original cuando está disponible.</p></details>
     </section>
+    <div class="yp-public-section yp-final-links">
+      <a class="e1-btn t" href="/login.html" data-cta="final">Ingresar a mi cuenta</a>
+      <a class="e1-btn sec" href="#recorrido">Volver al recorrido</a>
+    </div>
   </main>
 </div>
 
-<script src="/js/landing.js?v=recorrido1"></script>
+<script src="/js/landing.js?v=recorrido2"></script>
 </body>
 </html>

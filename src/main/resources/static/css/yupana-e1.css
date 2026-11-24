@@ -512,11 +512,20 @@ body{margin:0;background:#f7f5f0;-webkit-font-smoothing:antialiased}
 
 .yp-tour{margin-top:12px;scroll-margin-top:24px}
 .yp-tour-intro,.yp-tour figcaption p{color:var(--e-mut);line-height:1.55}
-.yp-tour-controls:not([hidden]){display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.yp-tour-controls:not([hidden]),.yp-tour-steps,.yp-tour-arrows{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.yp-tour-controls{margin:16px 0}
+.yp-tour-steps{flex:1}
 .yp-tour-controls button{background:#fffdf8;border:1px solid var(--e-line);border-radius:24px;padding:8px 16px;min-height:44px;color:var(--e-ink);font:inherit;cursor:pointer}
+.yp-tour-controls button:hover{border-color:var(--e-t)}
 .yp-tour-controls button[aria-pressed=true]{background:#a83b18;border-color:#a83b18;color:white}
-.yp-tour figure:not([hidden]){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);align-items:center;gap:clamp(16px,4vw,44px);margin:12px 0;padding:clamp(16px,3vw,32px);background:#fffcf7;border:1px solid var(--e-line);border-radius:20px}
-.yp-tour figcaption h3{font-size:clamp(22px,3vw,34px);line-height:1.12;letter-spacing:-.035em;margin-bottom:12px}
-.yp-tour figure a{display:grid;align-items:center;background:#f2eee7;border-radius:12px;overflow:hidden;aspect-ratio:1050/780;cursor:zoom-in}
-.yp-tour img{width:100%;height:auto;display:block}
-@media(max-width:700px){.yp-tour figure:not([hidden]){grid-template-columns:minmax(0,1fr)}}
+.yp-tour figure:not([hidden]){display:grid;gap:16px;margin:12px 0;padding:clamp(14px,3vw,28px);background:#fffcf7;border:1px solid var(--e-line);border-radius:20px}
+.yp-tour figcaption h3{font-size:clamp(20px,3vw,30px);line-height:1.15;letter-spacing:-.035em;margin-bottom:5px}
+.yp-tour figure a{display:grid;place-items:center;background:#f4f6f5;border:1px solid var(--e-line);border-radius:12px;overflow:hidden;aspect-ratio:2/1;cursor:zoom-in}
+.yp-tour img{width:100%;height:100%;object-fit:contain;display:block}
+.yp-benefits{margin-left:0;padding-left:0}
+.yp-faq h2{margin-bottom:8px}
+.yp-final-links{display:flex;gap:10px;flex-wrap:wrap}
+@media(max-width:600px){
+  .yp-tour-steps{order:2;flex-basis:100%}
+  .yp-tour-arrows{margin-left:auto}
+}
