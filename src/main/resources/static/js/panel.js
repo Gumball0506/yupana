@@ -27,45 +27,24 @@ async function cargar() {
     <div class="e1-stat"><b>${empresas.length}</b><span>Empresas</span></div>
     <div class="e1-stat"><b>${empresas.filter(e => e.conciliacion).length}</b><span>Con conciliación</span></div>
     <div class="e1-stat"><b>${pend}</b><span>Casos pendientes de revisión</span></div>
-    <div class="e1-stat"><b>${soles(igv)}</b><span>IGV bajo revisión</span></div>`;
-  pintarEmpresas();
+    <div class="e1-stat"><b>${soles(igv)}</b><span>IGV bajo revisión (demo), suma</span></div>`;
+  $("empresas").innerHTML = `<div class="e1-scroll"><table class="e1-data pn-tabla">
+    <thead><tr><th>Empresa</th><th>RUC</th><th>Periodo</th><th class="n">Comprobantes</th><th class="n">No cuadran</th><th class="n">Pendientes</th>
+      <th class="n">IGV bajo revisión</th><th>Último mensaje</th><th>Acceso MYPE</th><th></th></tr></thead>
+    <tbody>${empresas.map(e => { const c = e.conciliacion; return `<tr class="${e.activa ? "pn-fila" : "pn-inactiva"}"${e.activa ? ` data-abrir="${e.id}" tabindex="0" title="Abrir ${esc(e.razon_social)}"` : ""}>
+      <td class="pn-nombre" data-th="Empresa">${esc(e.razon_social)}${e.activa ? "" : ` <span class="e1-rev">Desactivada</span>`}</td><td data-th="RUC">${esc(e.ruc)}</td>
+      <td data-th="Periodo">${c ? esc(c.periodo) : `<span class="e1-rev">${e.cargas ? "Sin conciliar" : "Sin cargas"}</span>`}</td>
+      <td class="n" data-th="Comprobantes">${c ? c.total : "—"}</td><td class="n" data-th="No cuadran">${c ? c.con_diferencia : "—"}</td>
+      <td class="n" data-th="Pendientes">${c ? (c.pendientes ? `<span class="e1-st x">${ic("alert")}${c.pendientes}</span>` : `<span class="e1-st ok">${ic("check")}0</span>`) : "—"}</td>
+      <td class="n" data-th="IGV bajo revisión">${c ? soles(c.igv_revision) : "—"}</td>
+      <td data-th="Último mensaje">${e.ultimo_mensaje ? esc(fechaTexto(e.ultimo_mensaje)) : "—"}</td>
+      <td data-th="Acceso MYPE">${e.accesos.length ? esc(e.accesos.join(", ")) : `<button class="e1-link" data-acceso="${e.id}">Dar acceso</button>`}</td>
+      <td class="pn-acciones">
+        <button class="pn-icono" data-editar="${e.id}" title="Editar" aria-label="Editar ${esc(e.razon_social)}">${ic("edit")}</button>
+        <button class="pn-icono${e.activa ? " peligro" : ""}" data-estado="${e.id}" title="${e.activa ? "Desactivar" : "Reactivar"}"
+          aria-label="${e.activa ? "Desactivar" : "Reactivar"} ${esc(e.razon_social)}">${ic("power")}</button></td></tr>`; }).join("")}</tbody></table></div>
+    <p class="e1-info">«IGV bajo revisión» es una cifra indicativa sujeta a revisión profesional: no es crédito fiscal perdido ni recuperado.</p>`;
 }
-
-const normalizar = s => s.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
-function pintarEmpresas() {
-  const consulta = normalizar($("buscar-empresa").value.trim());
-  const visibles = empresas.filter(e => normalizar(e.razon_social).includes(consulta) || e.ruc.includes(consulta));
-  $("empresa-estado").textContent = visibles.length
-    ? `${visibles.length} ${visibles.length === 1 ? "empresa" : "empresas"}`
-    : consulta ? "No encontramos empresas con esa búsqueda." : "Agrega una empresa para empezar.";
-  $("empresas").innerHTML = visibles.map(e => {
-    const c = e.conciliacion;
-    return `<article class="yp-company">
-      <header class="yp-company-head">
-        <div><h2>${esc(e.razon_social)}</h2><p>RUC ${esc(e.ruc)}</p></div>
-        <span class="e1-chip ${e.activa && c ? "ok" : ""}">${!e.activa ? "Desactivada" : c ? esc(c.periodo || "Conciliada") : e.cargas ? "Sin conciliar" : "Sin cargas"}</span>
-      </header>
-      <dl class="yp-company-metrics">
-        <div><dt>Comprobantes</dt><dd>${c?.total ?? "—"}</dd></div>
-        <div><dt>No cuadran</dt><dd>${c?.con_diferencia ?? "—"}</dd></div>
-        <div><dt>Pendientes</dt><dd>${c?.pendientes ?? "—"}</dd></div>
-        <div><dt>IGV bajo revisión</dt><dd>${c ? soles(c.igv_revision) : "—"}</dd></div>
-      </dl>
-      <div class="yp-company-detail">
-        ${e.ultimo_mensaje ? `<span>Último mensaje · ${esc(fechaTexto(e.ultimo_mensaje))}</span>` : ""}
-        ${e.accesos.length ? `<span>Acceso MYPE · ${esc(e.accesos.join(", "))}</span>`
-          : `<button type="button" class="e1-link" data-acceso="${e.id}">Dar acceso MYPE</button>`}
-      </div>
-      <footer class="yp-company-actions">
-        ${e.activa ? `<button type="button" class="e1-btn t" data-abrir="${e.id}" data-periodo="${esc(c?.periodo)}">Abrir empresa</button>` : ""}
-        <button type="button" class="pn-icono" data-editar="${e.id}" title="Editar" aria-label="Editar ${esc(e.razon_social)}">${ic("edit")}</button>
-        <button type="button" class="pn-icono${e.activa ? " peligro" : ""}" data-estado="${e.id}"
-          aria-label="${e.activa ? "Desactivar" : "Reactivar"} ${esc(e.razon_social)}" title="${e.activa ? "Desactivar" : "Reactivar"}">${ic("power")}</button>
-      </footer>
-    </article>`;
-  }).join("");
-}
-$("buscar-empresa").addEventListener("input", pintarEmpresas);
 
 function digito(diez) {
   const suma = [...diez].reduce((s, c, i) => s + Number(c) * PESOS[i], 0);
@@ -96,14 +75,10 @@ $("form-empresa").addEventListener("submit", async e => {
 let accesoPara = null;
 let editando = null;
 document.addEventListener("click", async e => {
-  const a = e.target.closest("button[data-abrir]");
+  // La fila abre la empresa, salvo que el clic sea en un botón o enlace dentro de ella
+  const a = !e.target.closest("button, a") && e.target.closest("[data-abrir]");
   if (a) {
-    try {
-      await api(`/api/empresas/${a.dataset.abrir}/activar`, { method: "POST" });
-      const destino = new URL("/demo.html", location.origin);
-      if (a.dataset.periodo) destino.searchParams.set("periodo", a.dataset.periodo);
-      location.href = destino.href;
-    }
+    try { await api(`/api/empresas/${a.dataset.abrir}/activar`, { method: "POST" }); location.href = "/demo.html"; }
     catch (err) { alert(err.message); }
   }
   const ac = e.target.closest("[data-acceso]");
@@ -143,6 +118,9 @@ document.addEventListener("click", async e => {
     }
   }
 });
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter" && e.target.matches?.("tr[data-abrir]")) e.target.click();
+});
 $("form-editar").addEventListener("submit", async e => {
   e.preventDefault();
   try {
@@ -173,6 +151,5 @@ function evento(tipo, detalle) {
 api("/api/yo").then(yo => {
   if (yo.rol !== "ESTUDIO") { location.href = "/demo.html"; return; }
   $("usuario").textContent = yo.usuario;
-  $("ruc-libre").hidden = !yo.demo;
-  return cargar();
-}).catch(error => { $("empresa-estado").textContent = error.message; });
+  cargar();
+}).catch(() => {});

@@ -1,6 +1,6 @@
 const ORIGENES = {
   compras: { nombre: "Compras de la empresa", desc: "Tu registro interno de compras" },
-  rce: { nombre: "Propuesta RCE", desc: "Archivo del Registro de Compras Electrónico" },
+  rce: { nombre: "Propuesta RCE (simulada)", desc: "RCE = Registro de Compras Electrónico que propone SUNAT; aquí, un archivo ficticio" },
 };
 // Archivos de cada botón de ejemplo (servidos desde /ejemplos)
 const EJEMPLOS = {
@@ -23,8 +23,6 @@ const fechaTexto = iso => { const [f, h = ""] = iso.split("T"); const [a, m, d] 
 
 // estado[o] = { fase: vacia|lista|subiendo|ok|error, archivo, errores, celdas, vista, advertencias, detalle }
 const estado = { compras: { fase: "vacia" }, rce: { fase: "vacia" } };
-let periodoCarga = null;
-const conPeriodo = ruta => periodoCarga ? ruta + "?periodo=" + encodeURIComponent(periodoCarga) : ruta;
 const ultimas = {};   // última importación guardada por origen
 
 // ---------- Eventos anónimos (Marketing 5.0) ----------
@@ -77,7 +75,7 @@ function elegir(o, archivo) {
   let error = null;
   if (![".csv", ".xlsx"].includes(ext)) error = `Formato '${ext || "sin extensión"}' no admitido. Usa CSV o XLSX.`;
   else if (archivo.size === 0) error = "El archivo está vacío.";
-  else if (archivo.size > MAX_BYTES) error = "El archivo supera el límite de 2 MB.";
+  else if (archivo.size > MAX_BYTES) error = "El archivo supera 2 MB, límite de la demo.";
   estado[o] = error ? { fase: "error", archivo, errores: [error], celdas: [] } : { fase: "lista", archivo };
   pintar();
 }
@@ -224,7 +222,6 @@ async function subir(o) {
   const fd = new FormData();
   fd.append("origen", o);
   fd.append("archivo", e.archivo);
-  if (periodoCarga) fd.append("periodo", periodoCarga);
   try {
     const r = await fetch("/api/cargas", { method: "POST", body: fd });
     const d = await r.json().catch(() => ({}));
@@ -233,7 +230,7 @@ async function subir(o) {
       estado[o] = { fase: "ok", detalle: d };
       evento("carga_exitosa", o);
     } else {
-      const errores = d.errores || [r.status === 413 ? "El archivo supera el límite de 2 MB."
+      const errores = d.errores || [r.status === 413 ? "El archivo supera 2 MB, límite de la demo."
                                                       : "Error inesperado del servidor (" + r.status + ")."];
       estado[o] = { fase: "error", archivo: e.archivo, errores, celdas: d.celdas || [], vista: d.vista };
       evento("carga_fallida", motivo(errores));
@@ -243,11 +240,7 @@ async function subir(o) {
   }
 }
 
-let cargaEnCurso = false;
 async function cargarListas() {
-  if (cargaEnCurso) return;
-  cargaEnCurso = true;
-  $("periodo-carga").disabled = true;
   $("btn-cargar").disabled = true;
   const subidos = Object.keys(ORIGENES).filter(o => estado[o].fase === "lista");
   for (const o of subidos) await subir(o);
@@ -257,9 +250,6 @@ async function cargarListas() {
   pintar();
   refrescarHistorial();
   mostrarResultadoCarga(subidos);
-  cargaEnCurso = false;
-  $("periodo-carga").disabled = false;
-  pintar();
 }
 
 /** Cuadro al frente: resultado de la conciliación + advertencias de formato + archivos rechazados, todo junto. */
@@ -356,32 +346,13 @@ function verContenido(d) {
 // ---------- Historial ----------
 async function refrescarHistorial() {
   if (!$("det-historial").open) return;
-  let h;
-  try {
-    h = await api("/api/cargas/historial");
-  } catch {
-    $("historial").textContent = "No se pudo consultar el historial. Vuelve a abrirlo para intentar de nuevo.";
-    return;
-  }
-  const grupos = new Map();
-  for (const i of h) {
-    const periodo = i.periodo ?? "";
-    if (!grupos.has(periodo)) grupos.set(periodo, []);
-    grupos.get(periodo).push(i);
-  }
-  $("historial").innerHTML = h.length ? [...grupos.keys()].sort().reverse().map(periodo =>
-    `<section class="e1-historial-mes"><h3>${esc(periodo || "Cargas sin periodo asignado")}</h3>
-      ${tablaHistorial(grupos.get(periodo))}</section>`).join("")
-    : `<p class="e1-info">Aún no hay importaciones.</p>`;
-}
-
-function tablaHistorial(h) {
-  return `<div class="e1-scroll"><table class="e1-data">
+  const h = await fetch("/api/cargas/historial").then(r => r.json()).catch(() => []);
+  $("historial").innerHTML = h.length ? `<div class="e1-scroll"><table class="e1-data">
     <thead><tr><th>#</th><th>Origen</th><th>Archivo</th><th>Fecha</th><th class="n">Filas</th><th></th></tr></thead>
     <tbody>${h.map(i => `<tr><td>${i.id}</td><td>${esc(ORIGENES[i.origen].nombre)}</td><td>${esc(i.nombre_archivo)}</td>
       <td>${esc(i.fecha.replace("T", " "))}</td><td class="n">${i.total_filas}</td>
-      <td><button class="e1-link" data-ver="${i.id}">Ver</button>
-        ${i.archivo_disponible ? `<a href="/api/cargas/${i.id}/archivo">Descargar original</a>` : ""}</td></tr>`).join("")}</tbody></table></div>`;
+      <td><button class="e1-link" data-ver="${i.id}">Ver</button></td></tr>`).join("")}</tbody></table></div>`
+    : `<p class="e1-info">Aún no hay importaciones.</p>`;
 }
 $("det-historial").addEventListener("toggle", () => { if ($("det-historial").open) { evento("historial_visto"); refrescarHistorial(); } });
 
@@ -393,8 +364,8 @@ async function verImportacion(id) {
 function pintar() {
   for (const o of Object.keys(ORIGENES)) pintarTarjeta(o);
   const fases = Object.values(estado).map(e => e.fase);
-  $("btn-cargar").disabled = cargaEnCurso || !fases.includes("lista");
-  const periodo = periodoCarga ?? conciliacion?.periodo ?? ultimas.compras?.resumen?.desde?.slice(0, 7);
+  $("btn-cargar").disabled = !fases.includes("lista");
+  const periodo = conciliacion?.periodo ?? ultimas.compras?.resumen?.desde?.slice(0, 7);
   $("crumb").innerHTML = `<span>Conciliación</span>${periodo ? `<span aria-hidden="true">/</span><b>Periodo ${esc(periodo)}</b>` : ""}`;
   pintarPanel();
 }
@@ -420,7 +391,7 @@ const desactualizada = () => conciliacion?.id &&
 async function conciliar(desplazar = true) {
   $("btn-conciliar").disabled = true;
   try {
-    const r = await fetch(conPeriodo("/api/conciliar"), { method: "POST" });
+    const r = await fetch("/api/conciliar", { method: "POST" });
     const d = await r.json().catch(() => ({}));
     if (r.ok) { conciliacion = d; filtro = filtroInicial(d); evento("panel_visto"); }
     else { conciliacion = null; $("panel").innerHTML = `<div class="e1-msg err">${esc((d.errores || ["Error al conciliar (" + r.status + ")."]).join(" "))}</div>`; }
@@ -610,7 +581,7 @@ function abrirCaso(id) {
   </form>`;
   if (!dlg.open) dlg.showModal();
 }
-$("dlg-caso").addEventListener("close", () => { if (/^#caso-/.test(location.hash)) history.replaceState(null, "", location.pathname + location.search); });
+$("dlg-caso").addEventListener("close", () => { if (/^#caso-/.test(location.hash)) history.replaceState(null, "", location.pathname); });
 
 function abrirDesdeHash() {
   const m = location.hash.match(/^#caso-(\d+)$/);
@@ -635,7 +606,7 @@ let temporizadorAccion;
 function avisarAccion(r, revision) {
   const caja = $("estado-accion");
   caja.textContent = `✓ ${r.serie}-${r.numero} quedó ${revision.accion === "OBSERVADO" ? "observado" : "confirmado"} y guardado `
-    + `en Yupana.`;
+    + `(se mantiene al recargar). Es un estado interno de la demo: no presenta nada a SUNAT.`;
   caja.hidden = false;
   clearTimeout(temporizadorAccion);
   temporizadorAccion = setTimeout(() => { caja.hidden = true; }, 8000);
@@ -711,7 +682,7 @@ function pintarChat() {
   $("chat-badge").textContent = nuevos;
   $("chat").innerHTML = `<div class="ch-caja">
     <div class="ch-cab"><div><b>${esc(estudio ? yo.empresa.razon_social : "Estudio contable")}</b>
-      <span>${estudio ? (chat.telefono ? "+" + esc(chat.telefono) : "sin número de WhatsApp") : "tu estudio contable"} · chat interno</span></div>
+      <span>${estudio ? (chat.telefono ? "+" + esc(chat.telefono) : "sin número de WhatsApp") : "tu estudio contable"} · simulado</span></div>
       <button class="e1-btn quiet" type="button" data-chat-actualizar>Actualizar</button></div>
     <div class="ch-lista" id="ch-lista">${chat.mensajes.map(m => {
       const mio = (m.direccion === "SALIENTE") === estudio;
@@ -757,23 +728,6 @@ fetch("/api/yo").then(r => { if (r.status === 401) location.href = "/login.html"
   if (!y) return;
   if (!y.empresa) { location.href = "/panel.html"; return; }
   yo = y;
-  if (y.demo) {
-    document.querySelectorAll("[data-solo-demo]").forEach(el => { el.hidden = false; });
-  } else {
-    const periodoUrl = new URLSearchParams(location.search).get("periodo");
-    const hoy = new Intl.DateTimeFormat("sv-SE", { timeZone: "America/Lima", year: "numeric", month: "2-digit" });
-    periodoCarga = /^[1-9][0-9]{3}-(0[1-9]|1[0-2])$/.test(periodoUrl) ? periodoUrl : hoy.format(new Date());
-    const selector = $("periodo-carga");
-    selector.value = periodoCarga;
-    selector.addEventListener("change", () => {
-      if (!selector.validity.valid) { selector.value = periodoCarga; return; }
-      const url = new URL(location.href);
-      url.searchParams.set("periodo", selector.value);
-      url.hash = "";
-      location.assign(url.href);
-    });
-    $("selector-periodo").hidden = false;
-  }
   document.body.classList.toggle("rol-mype", y.rol === "MYPE");
   if (y.rol === "MYPE") {
     document.querySelector(".e1-intro .e1-h1").textContent = "Tus casos por revisar";
@@ -785,8 +739,8 @@ fetch("/api/yo").then(r => { if (r.status === 401) location.href = "/login.html"
   cargarChat();
 // Persistencia: al recargar se consulta lo guardado en la BD
 return Promise.all([
-  api(conPeriodo("/api/cargas")),
-  api(conPeriodo("/api/conciliaciones/ultima")),
+  fetch("/api/cargas").then(r => r.json()),
+  fetch("/api/conciliaciones/ultima").then(r => r.json()),
 ]).then(([d, conc]) => {
   for (const [o, det] of Object.entries(d)) {
     if (ultimas[o]) continue; // el usuario ya cargó algo mientras llegaba esta respuesta: no pisarlo
@@ -797,8 +751,6 @@ return Promise.all([
   filtro = filtroInicial(conc);
   pintar();
   abrirDesdeHash();
-}).catch(err => {
-  $("estado-periodo").textContent = err.message;
-}).finally(() => { $("periodo-carga").disabled = false; });
+}).catch(() => {});
 }).catch(() => {});
 addEventListener("hashchange", abrirDesdeHash);

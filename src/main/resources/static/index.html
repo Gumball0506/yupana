@@ -3,133 +3,341 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Concilia compras y RCE por empresa y periodo. Revisa diferencias y recupera tus archivos originales en Yupana.">
+<meta name="description" content="Yupana cruza tu registro de compras con la propuesta RCE y te muestra qué comprobantes no cuadran y por qué. Sin IA, sin clave SOL, una empresa por cliente.">
+<meta name="theme-color" content="#f7f5f0">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Yupana · Cuadra tus compras con el RCE antes del cierre">
+<meta property="og:description" content="Encuentra las diferencias entre tu registro de compras y la propuesta RCE, revisa cada caso y avisa a tu cliente. Oferta de lanzamiento: 30 % de descuento en tus primeros 3 meses.">
 <link rel="icon" href="data:,">
 <title>Yupana · Cuadra tus compras con el RCE</title>
+<script src="/js/landing-pre.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/yupana-e1.css?v=terracota">
+<link rel="stylesheet" href="/css/landing.css?v=3">
+<link rel="preload" as="image" href="/recorrido/resultado.webp" type="image/webp" fetchpriority="high">
 </head>
-<body class="yp-app yp-public yp-marketing">
+<body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
-<symbol id="e-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"></path></symbol>
-<symbol id="e-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></symbol>
-<symbol id="e-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 7.8v.1"></path></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"></path></symbol>
+<symbol id="i-left" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"></path></symbol>
+<symbol id="i-right" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"></path></symbol>
+<symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"></path></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"></path></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"></path></symbol>
+<symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"></path></symbol>
+<symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 4v16M6 20h12M5 8h14"></path><path d="M5 8l-3 7a3.5 3.5 0 0 0 6 0zM19 8l-3 7a3.5 3.5 0 0 0 6 0z"></path></symbol>
+<symbol id="i-send" viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-3-7z"></path></symbol>
+<symbol id="i-rules" viewBox="0 0 24 24"><path d="M5 5h14v14H5z"></path><path d="M9 12l2.2 2.2L15.5 9.8"></path></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"></path><path d="M12 10v4M12 17.2v.1"></path></symbol>
+<symbol id="i-building" viewBox="0 0 24 24"><path d="M4 21V5l8-2v18M12 9h8v12M4 21h16"></path><path d="M8 8v.1M8 12v.1M8 16v.1M16 13v.1M16 17v.1"></path></symbol>
+<symbol id="i-note" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"></path><path d="M9 12h7M9 16h5"></path></symbol>
+<symbol id="i-csv" viewBox="0 0 24 24"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"></path></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5"></rect><path d="M11 18.5h2"></path></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"></path><path d="M8 9.5h8M8 12.5h5"></path></symbol>
+<symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8z"></path><path d="M7.5 8v.1"></path></symbol>
 </defs></svg>
 
-<div class="e1">
-  <header class="e1-bar">
-    <a class="e1-logo" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="6" fill="#1a1712"></rect><circle cx="8" cy="8" r="2.2" fill="#f7f5f0"></circle><circle cx="16" cy="8" r="2.2" fill="#f7f5f0"></circle><circle cx="8" cy="16" r="2.2" fill="#f7f5f0"></circle><circle cx="16" cy="16" r="2.2" fill="#e0643a"></circle></svg>Yupana</a>
-    <nav class="yp-commercial-nav" aria-label="Navegación principal"><a href="#recorrido">Ver recorrido</a><a href="#planes">Planes</a></nav>
-    <a class="e1-btn chico-bar sec" href="/login.html" data-cta="barra">Ingresar a Yupana</a>
+<div class="e1 ln">
+  <div class="ln-promo" id="ln-promo" role="region" aria-label="Oferta de lanzamiento">
+    <p><svg class="ic" aria-hidden="true"><use href="#i-tag"></use></svg><span><strong>Oferta de lanzamiento:</strong> 30 % de descuento en tus primeros 3 meses</span> <a href="#planes" data-cta="promo_barra">Ver planes</a></p>
+    <button type="button" class="ln-promo-x" id="ln-promo-x" aria-label="Cerrar aviso de oferta"><svg class="ic" aria-hidden="true"><use href="#i-x"></use></svg></button>
+  </div>
+
+  <header class="ln-bar" id="ln-bar">
+    <div class="ln-wrap ln-bar-in">
+      <a class="e1-logo" href="/" aria-label="Yupana, inicio"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="6" fill="#1a1712"></rect><circle cx="8" cy="8" r="2.2" fill="#f7f5f0"></circle><circle cx="16" cy="8" r="2.2" fill="#f7f5f0"></circle><circle cx="8" cy="16" r="2.2" fill="#f7f5f0"></circle><circle cx="16" cy="16" r="2.2" fill="#e0643a"></circle></svg>Yupana</a>
+      <nav class="ln-nav" aria-label="Navegación principal">
+        <a href="#recorrido">Recorrido</a><a href="#como">Cómo funciona</a><a href="#para-quien">Para quién</a><a href="#planes">Planes</a><a href="#preguntas">Preguntas</a>
+      </nav>
+      <a class="e1-btn t ln-bar-cta" href="/login.html" data-cta="barra">Ingresar <svg class="ic" aria-hidden="true"><use href="#i-arrow"></use></svg></a>
+    </div>
   </header>
 
-  <main class="e1-wrap yp-landing">
-    <section class="yp-hero" aria-labelledby="yp-title">
-      <div class="yp-hero-copy">
-        <h1 id="yp-title">Encuentra las diferencias <em>antes del cierre.</em></h1>
-        <p>Cruza tus compras con el Registro de Compras Electrónico (RCE) y dedica la revisión a los comprobantes que requieren atención. Todo queda organizado por empresa y mes.</p>
-        <div class="yp-public-actions">
-          <a class="e1-btn t" href="/login.html" data-cta="hero">Ingresar a Yupana <svg class="ic" aria-hidden="true"><use href="#e-arrow"></use></svg></a>
-          <a class="e1-btn sec" href="#recorrido">Ver demostración</a>
+  <main>
+    <!-- HERO -->
+    <section class="ln-hero" aria-labelledby="ln-h1">
+      <div class="ln-wrap ln-hero-in">
+        <div class="ln-hero-copy">
+          <a class="ln-pill" href="#planes" data-cta="promo_hero"><svg class="ic" aria-hidden="true"><use href="#i-tag"></use></svg><span>Lanzamiento: <b>30 % de descuento</b> en tus primeros 3 meses</span></a>
+          <h1 id="ln-h1">Cuadra tus compras con el RCE <em>antes del cierre.</em></h1>
+          <p class="ln-lead">Yupana cruza tu registro de compras con la propuesta RCE, comprobante por comprobante, y te muestra cuáles no cuadran y por qué. Tú decides qué hacer con cada uno.</p>
+          <div class="ln-actions">
+            <a class="e1-btn t ln-big" href="/login.html" data-cta="hero">Ingresar a Yupana <svg class="ic" aria-hidden="true"><use href="#i-arrow"></use></svg></a>
+            <a class="e1-btn sec ln-big" href="#recorrido">Ver cómo funciona</a>
+          </div>
+          <ul class="ln-trust" aria-label="Garantías">
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"></use></svg>Reglas fijas, sin IA</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"></use></svg>Sin pedir tu clave SOL</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"></use></svg>Una empresa por cliente</li>
+          </ul>
+        </div>
+        <div class="ln-hero-art">
+          <div class="ln-browser" role="img" aria-label="Pantalla de resultado de Yupana: 22 de 103 comprobantes no cuadran con la propuesta del RCE">
+            <div class="ln-browser-bar" aria-hidden="true"><i></i><i></i><i></i><span>Yupana · Conciliación</span></div>
+            <img src="/recorrido/resultado.webp" width="1800" height="1071" alt="" fetchpriority="high" decoding="async">
+          </div>
+          <div class="ln-chip ln-chip-a" aria-hidden="true"><span>Por revisar</span><b>22 de 103</b></div>
+          <div class="ln-chip ln-chip-b" aria-hidden="true"><span>IGV bajo revisión</span><b>S/ 6,797.33</b></div>
         </div>
       </div>
-      <figure class="yp-preview">
-        <figcaption>Vista de ejemplo</figcaption>
-        <h2>Resumen de conciliación</h2>
-        <div class="yp-sample-counts">
-          <div><span>Comprobantes</span><strong>10</strong></div>
-          <div><span>Cuadran</span><strong>7</strong></div>
-          <div><span>Por revisar</span><strong>3</strong></div>
-        </div>
-        <div class="yp-progress" aria-hidden="true"></div>
-        <ul class="yp-sample-list" aria-label="Ejemplos de comprobantes">
-          <li><span>Factura F001-003</span><span class="e1-chip">Diferencia de IGV</span></li>
-          <li><span>Factura F001-004</span><span class="e1-chip ok">Cuadra</span></li>
-          <li><span>Factura F001-007</span><span class="e1-chip">Diferencia de total</span></li>
+    </section>
+
+    <!-- CIFRAS DEL EJEMPLO -->
+    <section class="ln-stats" aria-label="Resultado de un mes de ejemplo">
+      <div class="ln-wrap">
+        <ul class="ln-stats-grid">
+          <li><b class="mono" data-count="103">103</b><span>comprobantes cruzados</span></li>
+          <li><b class="mono" data-count="81">81</b><span>coinciden campo por campo</span></li>
+          <li class="is-hot"><b class="mono" data-count="22">22</b><span>por revisar, ya identificados</span></li>
+          <li><b class="mono"><small>S/</small> <span data-count="6797.33" data-dec="2">6,797.33</span></b><span>de IGV bajo revisión</span></li>
         </ul>
-      </figure>
+        <p class="ln-stats-note">Resultado real de un mes de ejemplo con 100 compras y datos ficticios. El IGV bajo revisión es una cifra indicativa sujeta a revisión profesional.</p>
+      </div>
     </section>
 
-    <section class="yp-public-section" id="como" aria-labelledby="yp-como">
-      <h2 id="yp-como">Yupana en acción</h2>
-      <div class="yp-tour" id="recorrido" role="region" aria-label="Demostración de Yupana">
-        <p class="yp-tour-intro">Recorre el cierre de compras con una empresa de ejemplo.</p>
-        <div class="yp-tour-controls" hidden>
-          <div class="yp-tour-steps" role="group" aria-label="Elegir pantalla">
-            <button type="button" aria-controls="tour-empresas" aria-pressed="true">Empresas</button>
-            <button type="button" aria-controls="tour-cargas" aria-pressed="false">Carga mensual</button>
-            <button type="button" aria-controls="tour-resultados" aria-pressed="false">Diferencias</button>
-            <button type="button" aria-controls="tour-historial" aria-pressed="false">Historial</button>
+    <!-- RECORRIDO: CARRUSEL -->
+    <section class="ln-tour" id="recorrido" aria-labelledby="ln-tour-h">
+      <div class="ln-wrap">
+        <header class="ln-head">
+          <p class="ln-kicker">Recorrido</p>
+          <h2 id="ln-tour-h">Así se ve un cierre de compras en Yupana</h2>
+          <p>Capturas reales del sistema, con una empresa de ejemplo. Haz clic en una imagen para ampliarla.</p>
+        </header>
+
+        <div class="ln-tour-grid" id="ln-tour" data-tour>
+          <div class="ln-tabs" role="tablist" aria-label="Pantallas del recorrido">
+            <button type="button" role="tab" id="tab-panel" aria-controls="sl-panel" aria-selected="true" tabindex="0"><span class="ln-n">1</span><span class="ln-tt"><b>Todas tus empresas</b><small>Cada cliente con sus pendientes, su IGV bajo revisión y su último mensaje.</small></span><i class="ln-fill" aria-hidden="true"></i></button>
+            <button type="button" role="tab" id="tab-carga" aria-controls="sl-carga" aria-selected="false" tabindex="-1"><span class="ln-n">2</span><span class="ln-tt"><b>Sube compras y RCE</b><small>CSV o Excel. Yupana valida columnas, RUC, fechas e importes antes de guardar.</small></span><i class="ln-fill" aria-hidden="true"></i></button>
+            <button type="button" role="tab" id="tab-resultado" aria-controls="sl-resultado" aria-selected="false" tabindex="-1"><span class="ln-n">3</span><span class="ln-tt"><b>Sabe cuántos revisar</b><small>Un titular claro, el IGV bajo revisión y cuánto difiere entre las dos fuentes.</small></span><i class="ln-fill" aria-hidden="true"></i></button>
+            <button type="button" role="tab" id="tab-mapa" aria-controls="sl-mapa" aria-selected="false" tabindex="-1"><span class="ln-n">4</span><span class="ln-tt"><b>Cada comprobante, de un vistazo</b><small>El mapa marca en terracota los que difieren. Un clic te lleva a su fila.</small></span><i class="ln-fill" aria-hidden="true"></i></button>
+            <button type="button" role="tab" id="tab-caso" aria-controls="sl-caso" aria-selected="false" tabindex="-1"><span class="ln-n">5</span><span class="ln-tt"><b>Confirma u observa con una nota</b><small>Queda guardado con fecha y usuario, para retomarlo cuando quieras.</small></span><i class="ln-fill" aria-hidden="true"></i></button>
+            <button type="button" role="tab" id="tab-chat" aria-controls="sl-chat" aria-selected="false" tabindex="-1"><span class="ln-n">6</span><span class="ln-tt"><b>Avisa a tu cliente</b><small>Envía el resumen al chat de la empresa. WhatsApp se abre con el texto listo y tú lo envías.</small></span><i class="ln-fill" aria-hidden="true"></i></button>
           </div>
-          <div class="yp-tour-arrows" role="group" aria-label="Cambiar pantalla">
-            <button type="button" data-tour-step="-1" aria-label="Pantalla anterior">←</button>
-            <button type="button" data-tour-step="1" aria-label="Pantalla siguiente">→</button>
+
+          <div class="ln-stage-wrap">
+            <div class="ln-browser ln-stage" id="ln-stage">
+              <div class="ln-browser-bar" aria-hidden="true"><i></i><i></i><i></i><span>Yupana · Sistema</span></div>
+              <div class="ln-slides">
+                <figure class="ln-slide is-active" role="tabpanel" id="sl-panel" aria-labelledby="tab-panel">
+                  <a href="/recorrido/panel.webp" data-zoom aria-label="Ampliar: panel con todas las empresas"><img src="/recorrido/panel.webp" width="1800" height="1071" alt="Panel del estudio con seis empresas, sus casos pendientes y el IGV bajo revisión de cada una" decoding="async"></a>
+                </figure>
+                <figure class="ln-slide" role="tabpanel" id="sl-carga" aria-labelledby="tab-carga">
+                  <a href="/recorrido/carga.webp" data-zoom aria-label="Ampliar: carga de archivos"><img loading="lazy" src="/recorrido/carga.webp" width="1800" height="1071" alt="Pantalla de carga con las compras y la propuesta RCE ya importadas y menús de ejemplos y descargas" decoding="async"></a>
+                </figure>
+                <figure class="ln-slide" role="tabpanel" id="sl-resultado" aria-labelledby="tab-resultado">
+                  <a href="/recorrido/resultado.webp" data-zoom aria-label="Ampliar: resultado de la conciliación"><img loading="lazy" src="/recorrido/resultado.webp" width="1800" height="1071" alt="Resultado: 22 de 103 comprobantes no cuadran, con el IGV bajo revisión y la tabla de diferencias" decoding="async"></a>
+                </figure>
+                <figure class="ln-slide" role="tabpanel" id="sl-mapa" aria-labelledby="tab-mapa">
+                  <a href="/recorrido/mapa.webp" data-zoom aria-label="Ampliar: mapa de comprobantes"><img loading="lazy" src="/recorrido/mapa.webp" width="1800" height="1071" alt="Mapa de comprobantes con cuadros terracota para los que difieren y verdes para los que cuadran" decoding="async"></a>
+                </figure>
+                <figure class="ln-slide" role="tabpanel" id="sl-caso" aria-labelledby="tab-caso">
+                  <a href="/recorrido/caso.webp" data-zoom aria-label="Ampliar: revisión de un caso"><img loading="lazy" src="/recorrido/caso.webp" width="1800" height="1071" alt="Ventana de un caso con la comparación campo por campo y los botones Confirmar y Observar" decoding="async"></a>
+                </figure>
+                <figure class="ln-slide" role="tabpanel" id="sl-chat" aria-labelledby="tab-chat">
+                  <a href="/recorrido/chat.webp" data-zoom aria-label="Ampliar: chat con la empresa"><img loading="lazy" src="/recorrido/chat.webp" width="1800" height="1071" alt="Chat con la empresa: el estudio envía el resumen y la empresa responde" decoding="async"></a>
+                </figure>
+              </div>
+            </div>
+            <p class="ln-now" id="ln-now" aria-live="polite"></p>
+            <div class="ln-controls" role="group" aria-label="Controles del recorrido">
+              <button type="button" id="ln-prev" aria-label="Pantalla anterior"><svg class="ic" aria-hidden="true"><use href="#i-left"></use></svg></button>
+              <button type="button" id="ln-play" aria-label="Pausar recorrido automático" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="#i-pause"></use></svg></button>
+              <button type="button" id="ln-next" aria-label="Pantalla siguiente"><svg class="ic" aria-hidden="true"><use href="#i-right"></use></svg></button>
+              <span class="ln-count mono" id="ln-count">1 / 6</span>
+            </div>
           </div>
         </div>
-        <div class="yp-tour-slides">
-          <figure id="tour-empresas">
-            <figcaption><h3>Encuentra la empresa que vas a revisar</h3><p>Busca por razón social o RUC y consulta los casos pendientes de cada cliente.</p></figcaption>
-            <a href="/recorrido/empresas.webp?v=terracota" aria-label="Ampliar captura del panel de empresas"><img loading="lazy" src="/recorrido/empresas.webp?v=terracota" alt="Panel del estudio con indicadores y tarjetas por empresa"></a>
-          </figure>
-          <figure id="tour-cargas">
-            <figcaption><h3>Carga las compras y el RCE del mes</h3><p>Selecciona el periodo y sube los dos archivos en CSV o Excel.</p></figcaption>
-            <a href="/recorrido/cargas.webp?v=terracota" aria-label="Ampliar captura de la carga mensual"><img loading="lazy" src="/recorrido/cargas.webp?v=terracota" alt="Selector de periodo y áreas de carga para compras y propuesta RCE"></a>
-          </figure>
-          <figure id="tour-resultados">
-            <figcaption><h3>Revisa las diferencias por comprobante</h3><p>Ubica los casos pendientes y compara los importes del archivo de compras con los del RCE.</p></figcaption>
-            <a href="/recorrido/resultados.webp?v=terracota" aria-label="Ampliar captura de los resultados"><img loading="lazy" src="/recorrido/resultados.webp?v=terracota" alt="Resumen de conciliación con comprobantes que cuadran y casos por revisar"></a>
-          </figure>
-          <figure id="tour-historial">
-            <figcaption><h3>Recupera los archivos originales</h3><p>Consulta qué se importó en cada mes y descarga la misma versión que subiste.</p></figcaption>
-            <a href="/recorrido/historial.webp?v=terracota" aria-label="Ampliar captura del historial"><img loading="lazy" src="/recorrido/historial.webp?v=terracota" alt="Historial mensual con nombres de archivo y enlaces de descarga"></a>
-          </figure>
+      </div>
+    </section>
+
+    <!-- CÓMO FUNCIONA -->
+    <section class="ln-sec" id="como" aria-labelledby="ln-como-h">
+      <div class="ln-wrap">
+        <header class="ln-head">
+          <p class="ln-kicker">Cómo funciona</p>
+          <h2 id="ln-como-h">Tres pasos y sabes dónde mirar</h2>
+        </header>
+        <ol class="ln-steps">
+          <li data-reveal><span class="ln-ico"><svg class="ic" aria-hidden="true"><use href="#i-upload"></use></svg></span><span class="ln-num mono">01</span><h3>Sube tus archivos</h3><p>Tu registro de compras y la propuesta RCE, en CSV o Excel. Descarga la plantilla con las ocho columnas o empieza con un ejemplo.</p></li>
+          <li data-reveal><span class="ln-ico"><svg class="ic" aria-hidden="true"><use href="#i-scale"></use></svg></span><span class="ln-num mono">02</span><h3>Yupana los cruza</h3><p>Empareja por RUC, tipo, serie y número, y compara fecha, base, IGV y total con una tolerancia de S/ 0.01. Cada diferencia dice qué campo falla y por cuánto.</p></li>
+          <li data-reveal><span class="ln-ico"><svg class="ic" aria-hidden="true"><use href="#i-send"></use></svg></span><span class="ln-num mono">03</span><h3>Revisa y avisa</h3><p>Confirma u observa cada caso con una nota, exporta el resultado a CSV y envía el resumen a tu cliente por el chat de la empresa.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- BENEFICIOS -->
+    <section class="ln-sec ln-sec-alt" aria-labelledby="ln-ben-h">
+      <div class="ln-wrap">
+        <header class="ln-head">
+          <p class="ln-kicker">Qué ganas</p>
+          <h2 id="ln-ben-h">Menos tiempo cotejando, más claridad al cerrar</h2>
+        </header>
+        <ul class="ln-grid">
+          <li data-reveal><span class="ln-ico"><svg class="ic" aria-hidden="true"><use href="#i-rules"></use></svg></span><h3>Resultados que se explican</h3><p>Reglas fijas, sin IA. El mismo archivo da siempre el mismo resultado y puedes justificar cada diferencia ante tu cliente.</p></li>
+          <li data-reveal><span class="ln-ico"><svg class="ic" aria-hidden="true"><use href="#i-alert"></use></svg></span><h3>Errores de carga con fila y columna</h3><p>Si un importe no es un número o falta una columna, Yupana te dice dónde corregir y no guarda un archivo a medias.</p></li>
+          <li data-reveal><span class="ln-ico"><svg class="ic" aria-hidden="true"><use href="#i-building"></use></svg></span><h3>Una empresa por cliente</h3><p>Cada empresa tiene sus propias cargas, conciliaciones, casos y chat. Nada se mezcla entre clientes.</p></li>
+          <li data-reveal><span class="ln-ico"><svg class="ic" aria-hidden="true"><use href="#i-note"></use></svg></span><h3>Constancia de cada revisión</h3><p>Confirma u observa con una nota. Queda registrado con fecha y usuario, y se mantiene al volver a entrar.</p></li>
+          <li data-reveal><span class="ln-ico"><svg class="ic" aria-hidden="true"><use href="#i-csv"></use></svg></span><h3>Resultado en CSV</h3><p>Descarga la conciliación completa para trabajarla en tu hoja de cálculo o adjuntarla a tu informe.</p></li>
+          <li data-reveal><span class="ln-ico"><svg class="ic" aria-hidden="true"><use href="#i-phone"></use></svg></span><h3>Cómodo en el celular</h3><p>Los casos se muestran como tarjetas fáciles de leer, para revisar un comprobante sin abrir la computadora.</p></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CELULAR -->
+    <section class="ln-mobile" aria-labelledby="ln-mov-h">
+      <div class="ln-wrap ln-mobile-in">
+        <div class="ln-mobile-copy">
+          <p class="ln-kicker">En tu bolsillo</p>
+          <h2 id="ln-mov-h">Revisa un caso desde donde estés</h2>
+          <p>Un cliente te escribe a las 9 de la noche preguntando por una factura. Abre Yupana en el celular, mira la comparación campo por campo y respóndele en el momento.</p>
+          <ul class="ln-checks">
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"></use></svg>Casos en tarjetas, sin tablas anchas</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"></use></svg>Botón de revisión siempre a mano</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"></use></svg>Panel del estudio también en pantalla pequeña</li>
+          </ul>
+          <a class="e1-btn t ln-big" href="/login.html" data-cta="movil">Ingresar a Yupana <svg class="ic" aria-hidden="true"><use href="#i-arrow"></use></svg></a>
+        </div>
+        <div class="ln-phones">
+          <div class="ln-phone ln-phone-a"><img loading="lazy" src="/recorrido/movil-resultado.webp" width="585" height="1266" alt="Resultado de la conciliación visto en un celular" decoding="async"></div>
+          <div class="ln-phone ln-phone-b"><img loading="lazy" src="/recorrido/movil-panel.webp" width="585" height="1266" alt="Panel del estudio visto en un celular, con una tarjeta por empresa" decoding="async"></div>
         </div>
       </div>
     </section>
 
-    <section class="yp-public-section" aria-labelledby="yp-beneficios">
-      <h2 id="yp-beneficios">Qué puedes hacer con Yupana</h2>
-      <ul class="yp-steps yp-benefits">
-        <li><h3>Detecta errores de carga</h3><p>Identifica las filas que debes corregir antes de cruzar tus archivos.</p></li>
-        <li><h3>Deja constancia de la revisión</h3><p>Confirma u observa cada caso y guarda una nota para retomarlo después.</p></li>
-        <li><h3>Exporta los resultados</h3><p>Descarga la conciliación en CSV para trabajarla en una hoja de cálculo.</p></li>
-      </ul>
-    </section>
-
-    <section class="yp-public-section yp-workspace" aria-labelledby="yp-workspace-title">
-      <div>
-        <h2 id="yp-workspace-title">Un espacio para cada empresa</h2>
-        <p>Gestiona tus clientes desde el panel del estudio. Cada empresa tiene su propio historial, conciliaciones y casos por revisar.</p>
+    <!-- PARA QUIÉN -->
+    <section class="ln-sec" id="para-quien" aria-labelledby="ln-pq-h">
+      <div class="ln-wrap">
+        <header class="ln-head">
+          <p class="ln-kicker">Para quién</p>
+          <h2 id="ln-pq-h">Pensado para quien cierra compras todos los meses</h2>
+        </header>
+        <div class="ln-two">
+          <article data-reveal>
+            <span class="ln-ico"><svg class="ic" aria-hidden="true"><use href="#i-building"></use></svg></span>
+            <h3>Estudios contables</h3>
+            <ul class="ln-checks">
+              <li><svg class="ic" aria-hidden="true"><use href="#i-check"></use></svg>Panel con todas tus empresas y sus pendientes</li>
+              <li><svg class="ic" aria-hidden="true"><use href="#i-check"></use></svg>Alta, edición y acceso para cada cliente</li>
+              <li><svg class="ic" aria-hidden="true"><use href="#i-check"></use></svg>Resumen al chat de la empresa en un clic</li>
+            </ul>
+          </article>
+          <article data-reveal>
+            <span class="ln-ico"><svg class="ic" aria-hidden="true"><use href="#i-note"></use></svg></span>
+            <h3>MYPE y negocios</h3>
+            <ul class="ln-checks">
+              <li><svg class="ic" aria-hidden="true"><use href="#i-check"></use></svg>Ves solo tu empresa y tus comprobantes</li>
+              <li><svg class="ic" aria-hidden="true"><use href="#i-check"></use></svg>Revisas tus casos y dejas tus notas</li>
+              <li><svg class="ic" aria-hidden="true"><use href="#i-check"></use></svg>Respondes a tu estudio desde el chat</li>
+            </ul>
+          </article>
+        </div>
       </div>
-      <a class="e1-btn t" href="/login.html" data-cta="final">Ingresar a Yupana <svg class="ic" aria-hidden="true"><use href="#e-arrow"></use></svg></a>
     </section>
 
-    <section id="planes" class="yp-public-section" aria-labelledby="planes-titulo">
-      <h2 id="planes-titulo">Planes Yupana</h2>
-      <p class="yp-price-intro">Conoce la propuesta para empresas y estudios contables.</p>
-      <div class="yp-price-grid">
-        <article><h3>Starter</h3><p class="yp-price"><small>S/</small> 59</p></article>
-        <article><h3>Pro</h3><p class="yp-price"><small>S/</small> 149</p></article>
-        <article><h3>Estudio</h3><p class="yp-price"><small>S/</small> 349</p><p>Para estudios contables que atienden a varias empresas.</p></article>
+    <!-- PLANES CON DESCUENTO -->
+    <section class="ln-plans" id="planes" aria-labelledby="ln-pl-h">
+      <div class="ln-wrap">
+        <header class="ln-head ln-head-dark">
+          <p class="ln-badge"><svg class="ic" aria-hidden="true"><use href="#i-tag"></use></svg>Oferta de lanzamiento · 30 % de descuento</p>
+          <h2 id="ln-pl-h">Empieza con 30 % menos en tus primeros 3 meses</h2>
+          <p>Elige el plan que se ajusta a tu trabajo. El descuento se aplica sobre el precio regular durante tus tres primeros meses.</p>
+        </header>
+        <div class="ln-price-grid">
+          <article data-reveal>
+            <h3>Starter</h3>
+            <p class="ln-old"><s>S/ 59</s><span>al mes</span></p>
+            <p class="ln-price"><small>S/</small>41.30<span>al mes</span></p>
+            <p class="ln-save">Ahorras S/ 53.10 en 3 meses</p>
+            <p class="ln-fine">Luego S/ 59 al mes.</p>
+            <a class="e1-btn sec" href="https://wa.me/51940090582?text=Hola%2C%20quiero%20contratar%20el%20plan%20Starter%20de%20Yupana%20con%20el%2030%20%25%20de%20descuento%20de%20lanzamiento." target="_blank" rel="noopener" data-wa="plan_starter"><svg class="ic" aria-hidden="true"><use href="#i-chat"></use></svg>Contratar por WhatsApp</a>
+          </article>
+          <article class="is-feat" data-reveal>
+            <p class="ln-ribbon">Más ahorro</p>
+            <h3>Estudio</h3>
+            <p class="ln-old"><s>S/ 349</s><span>al mes</span></p>
+            <p class="ln-price"><small>S/</small>244.30<span>al mes</span></p>
+            <p class="ln-save">Ahorras S/ 314.10 en 3 meses</p>
+            <p class="ln-desc">Para estudios contables que atienden a varias empresas.</p>
+            <p class="ln-fine">Luego S/ 349 al mes.</p>
+            <a class="e1-btn t" href="https://wa.me/51940090582?text=Hola%2C%20quiero%20contratar%20el%20plan%20Estudio%20de%20Yupana%20con%20el%2030%20%25%20de%20descuento%20de%20lanzamiento." target="_blank" rel="noopener" data-wa="plan_estudio"><svg class="ic" aria-hidden="true"><use href="#i-chat"></use></svg>Contratar por WhatsApp</a>
+          </article>
+          <article data-reveal>
+            <h3>Pro</h3>
+            <p class="ln-old"><s>S/ 149</s><span>al mes</span></p>
+            <p class="ln-price"><small>S/</small>104.30<span>al mes</span></p>
+            <p class="ln-save">Ahorras S/ 134.10 en 3 meses</p>
+            <p class="ln-fine">Luego S/ 149 al mes.</p>
+            <a class="e1-btn sec" href="https://wa.me/51940090582?text=Hola%2C%20quiero%20contratar%20el%20plan%20Pro%20de%20Yupana%20con%20el%2030%20%25%20de%20descuento%20de%20lanzamiento." target="_blank" rel="noopener" data-wa="plan_pro"><svg class="ic" aria-hidden="true"><use href="#i-chat"></use></svg>Contratar por WhatsApp</a>
+          </article>
+        </div>
+        <div class="ln-pay" data-reveal>
+          <div class="ln-pay-copy">
+            <h3>Pagos y validación por WhatsApp</h3>
+            <p>Todavía no tenemos pasarela de pagos: te atendemos directamente por WhatsApp.</p>
+          </div>
+          <ol class="ln-pay-steps">
+            <li><span class="mono">1</span>Escríbenos por WhatsApp y dinos qué plan quieres.</li>
+            <li><span class="mono">2</span>Te damos los datos para realizar el pago.</li>
+            <li><span class="mono">3</span>Validamos tu pago y te confirmamos por el mismo chat.</li>
+          </ol>
+          <a class="e1-btn ln-wa-btn ln-big" href="https://wa.me/51940090582?text=Hola%2C%20quiero%20informaci%C3%B3n%20para%20pagar%20mi%20plan%20de%20Yupana." target="_blank" rel="noopener" data-wa="pagos"><svg class="ic" aria-hidden="true"><use href="#i-chat"></use></svg>Escribir al 940 090 582</a>
+        </div>
       </div>
-      <p class="yp-price-note">Precios referenciales sujetos a validación. Actualmente el acceso a Yupana funciona sin cobros ni límites por plan.</p>
     </section>
 
-    <section class="yp-public-section yp-faq" aria-labelledby="yp-faq-title">
-      <h2 id="yp-faq-title">Preguntas frecuentes</h2>
-      <details><summary>¿Qué formato deben tener los archivos?</summary><p>Las plantillas de Yupana incluyen las ocho columnas requeridas. Si tu exportación del RCE viene con otras columnas, adapta el archivo antes de subirlo. Se admiten importes desde cero.</p></details>
-      <details><summary>¿Necesito mi clave SOL?</summary><p>Solo necesitas tu cuenta de Yupana. Descarga la propuesta RCE desde SUNAT y súbela al periodo correspondiente.</p></details>
-      <details><summary>¿Puedo gestionar varias empresas?</summary><p>Sí. El panel del estudio te permite abrir cada empresa por separado y consultar sus conciliaciones y archivos por periodo.</p></details>
-      <details><summary>¿Puedo volver a descargar mis archivos?</summary><p>Sí. El historial de importaciones muestra los archivos guardados por periodo y ofrece la descarga del original cuando está disponible.</p></details>
+    <!-- PREGUNTAS -->
+    <section class="ln-sec" id="preguntas" aria-labelledby="ln-faq-h">
+      <div class="ln-wrap ln-faq-wrap">
+        <header class="ln-head">
+          <p class="ln-kicker">Preguntas frecuentes</p>
+          <h2 id="ln-faq-h">Lo que suelen preguntar antes de empezar</h2>
+        </header>
+        <div class="ln-faq">
+          <details><summary>¿Qué formato deben tener los archivos?</summary><p>Las plantillas de Yupana incluyen las ocho columnas requeridas, en CSV o Excel. Si tu exportación del RCE viene con otras columnas, adáptala antes de subirla. Se admiten importes desde cero.</p></details>
+          <details><summary>¿Necesito mi clave SOL?</summary><p>No. Solo necesitas tu cuenta de Yupana. Descargas la propuesta RCE desde SUNAT y la subes aquí; Yupana nunca te pide la clave SOL ni presenta nada ante SUNAT.</p></details>
+          <details><summary>¿Puedo gestionar varias empresas?</summary><p>Sí. El panel del estudio te deja abrir cada empresa por separado y ver sus conciliaciones, casos pendientes y chat sin que se mezclen los datos.</p></details>
+          <details><summary>¿Qué significa «IGV bajo revisión»?</summary><p>Es la suma del IGV de los comprobantes que debes revisar. Es una cifra indicativa sujeta a revisión profesional: no es crédito fiscal perdido ni recuperado.</p></details>
+          <details><summary>¿Cómo pago mi plan?</summary><p>Escríbenos por WhatsApp al 940 090 582. Todavía no tenemos pasarela de pagos, así que te indicamos cómo pagar y validamos tu pago directamente por el chat.</p></details>
+          <details><summary>¿En qué consiste el descuento de lanzamiento?</summary><p>Es un 30 % de descuento sobre el precio regular del plan durante tus tres primeros meses. Después se aplica el precio regular.</p></details>
+        </div>
+      </div>
     </section>
-    <div class="yp-public-section yp-final-links">
-      <a class="e1-btn t" href="/login.html" data-cta="final">Ingresar a mi cuenta</a>
-      <a class="e1-btn sec" href="#recorrido">Volver al recorrido</a>
-    </div>
+
+    <!-- CIERRE -->
+    <section class="ln-final" aria-labelledby="ln-fin-h">
+      <div class="ln-wrap ln-final-in">
+        <h2 id="ln-fin-h">Llega al cierre sabiendo qué revisar</h2>
+        <p>Empieza hoy con el 30 % de descuento de lanzamiento en tus primeros 3 meses.</p>
+        <div class="ln-final-acts"><a class="e1-btn ln-big ln-final-btn" href="/login.html" data-cta="final">Ingresar a Yupana <svg class="ic" aria-hidden="true"><use href="#i-arrow"></use></svg></a>
+          <a class="e1-btn ln-big ln-final-wa" href="https://wa.me/51940090582?text=Hola%2C%20quiero%20contratar%20Yupana%20con%20el%2030%20%25%20de%20descuento%20de%20lanzamiento." target="_blank" rel="noopener" data-wa="final"><svg class="ic" aria-hidden="true"><use href="#i-chat"></use></svg>Contratar por WhatsApp</a></div>
+      </div>
+    </section>
   </main>
+
+  <footer class="ln-foot">
+    <div class="ln-wrap ln-foot-in">
+      <a class="e1-logo" href="/" aria-label="Yupana, inicio"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="6" fill="#1a1712"></rect><circle cx="8" cy="8" r="2.2" fill="#f7f5f0"></circle><circle cx="16" cy="8" r="2.2" fill="#f7f5f0"></circle><circle cx="8" cy="16" r="2.2" fill="#f7f5f0"></circle><circle cx="16" cy="16" r="2.2" fill="#e0643a"></circle></svg>Yupana</a>
+      <p>Conciliación de compras y RCE para estudios contables y MYPE.</p>
+      <nav aria-label="Enlaces del pie"><a href="#recorrido">Recorrido</a><a href="#planes">Planes</a><a href="#preguntas">Preguntas</a><a href="/login.html">Ingresar</a><a href="https://wa.me/51940090582?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20Yupana." target="_blank" rel="noopener" data-wa="pie">WhatsApp 940 090 582</a></nav>
+    </div>
+  </footer>
+
+  <div class="ln-sticky" id="ln-sticky" aria-hidden="true">
+    <a class="e1-btn sec" href="/login.html" data-cta="movil_fijo" tabindex="-1">Ingresar</a>
+    <a class="e1-btn t" href="https://wa.me/51940090582?text=Hola%2C%20quiero%20contratar%20Yupana%20con%20el%2030%20%25%20de%20descuento%20de%20lanzamiento." target="_blank" rel="noopener" data-wa="movil_fijo" tabindex="-1"><svg class="ic" aria-hidden="true"><use href="#i-chat"></use></svg>WhatsApp · 30 % dto.</a>
+  </div>
+
+  <a class="ln-wa" href="https://wa.me/51940090582?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20Yupana." target="_blank" rel="noopener" data-wa="flotante" aria-label="Escribir por WhatsApp"><svg class="ic" aria-hidden="true"><use href="#i-chat"></use></svg><span>WhatsApp</span></a>
+
+  <dialog class="ln-lb" id="ln-lb" aria-label="Captura ampliada">
+    <button type="button" class="ln-lb-x" id="ln-lb-x" aria-label="Cerrar imagen ampliada"><svg class="ic" aria-hidden="true"><use href="#i-x"></use></svg></button>
+    <img id="ln-lb-img" alt="" src="data:,">
+    <p id="ln-lb-txt"></p>
+  </dialog>
 </div>
 
-<script src="/js/landing.js?v=terracota"></script>
+<script src="/js/landing.js?v=3"></script>
 </body>
 </html>

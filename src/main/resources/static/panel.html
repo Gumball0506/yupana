@@ -7,9 +7,9 @@
 <title>Yupana · Panel del estudio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/yupana-e1.css?v=terracota">
+<link rel="stylesheet" href="/css/sistema.css?v=sistema">
 </head>
-<body class="yp-app">
+<body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
 <symbol id="e-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"></path></symbol>
 <symbol id="e-alert" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"></path><path d="M12 10v4M12 17.2v.1"></path></symbol>
@@ -24,27 +24,20 @@
   <header class="e1-bar">
     <a class="e1-logo" href="/panel.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="6" fill="#1a1712"></rect><circle cx="8" cy="8" r="2.2" fill="#f7f5f0"></circle><circle cx="16" cy="8" r="2.2" fill="#f7f5f0"></circle><circle cx="8" cy="16" r="2.2" fill="#f7f5f0"></circle><circle cx="16" cy="16" r="2.2" fill="#e0643a"></circle></svg>Yupana</a>
     <nav class="e1-crumb" aria-label="Ubicación"><b>Panel del estudio</b></nav>
-    <div class="yp-nav">
-      <span class="e1-user" id="usuario"></span>
-      <a class="e1-btn quiet" href="/clave.html">Cambiar clave</a>
-      <button class="e1-btn quiet" id="salir">Salir</button>
-    </div>
+    <span class="e1-user" id="usuario"></span>
+    <a class="e1-btn quiet" href="/clave.html">Cambiar clave</a>
+    <button class="e1-btn quiet" id="salir">Salir</button>
   </header>
 
   <main class="e1-wrap">
     <section class="e1-intro">
       <div class="pn-titulo"><h1 class="e1-h1">Tus empresas</h1>
-        <button class="e1-btn t" id="btn-nueva" type="button">Nueva empresa</button></div>
-      <p class="e1-sub">Abre una empresa para gestionar sus archivos y conciliaciones.</p>
+        <button class="e1-btn t" id="btn-nueva" type="button">+ Empresa</button></div>
+      <p class="e1-sub">Cada empresa tiene sus propias cargas, conciliaciones, casos y chat. Nada se cruza entre empresas.</p>
     </section>
 
     <div class="e1-stats" id="totales"></div>
-    <section class="yp-directory" aria-label="Directorio de empresas">
-      <label class="e1-lbl" for="buscar-empresa">Buscar empresa</label>
-      <input class="e1-in" id="buscar-empresa" type="search" placeholder="Razón social o RUC">
-      <p id="empresa-estado" class="e1-info" role="status">Cargando empresas…</p>
-      <div id="empresas"></div>
-    </section>
+    <div id="empresas"></div>
 
   </main>
 
@@ -52,10 +45,10 @@
     <form class="e1-dlg-in" id="form-empresa">
       <h3 id="nueva-t">Nueva empresa</h3>
       <label class="e1-lbl" for="ruc">RUC</label>
-      <div class="pn-ruc"><input class="e1-in mono" id="ruc" inputmode="numeric" maxlength="11" required pattern="[0-9]{11}">
-        <button type="button" class="e1-btn sec" id="ruc-libre" hidden>Usar uno libre</button></div>
+      <div class="pn-ruc"><input class="e1-in mono" id="ruc" inputmode="numeric" maxlength="11" required placeholder="20999910042">
+        <button type="button" class="e1-btn sec" id="ruc-libre">Usar uno libre</button></div>
       <label class="e1-lbl" for="razon">Razón social</label>
-      <input class="e1-in" id="razon" maxlength="100" required>
+      <input class="e1-in" id="razon" maxlength="100" required placeholder="Bodega Demo D S.A.C.">
       <label class="e1-lbl" for="telefono">WhatsApp de la empresa (opcional)</label>
       <input class="e1-in mono" id="telefono" inputmode="tel" maxlength="15" placeholder="51999999999">
       <p class="e1-info">Solo dígitos con código de país (Perú = 51).</p>
