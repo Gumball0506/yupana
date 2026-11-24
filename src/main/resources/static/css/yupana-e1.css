@@ -361,18 +361,6 @@ body{margin:0;background:#f7f5f0;-webkit-font-smoothing:antialiased}
 .ch-panel .ch-form .e1-btn{align-self:flex-end}
 .e1-menu-lista{min-width:300px}
 /* Application workspace */
-.yp-app .e1{
-  --e-bg:#f4f6f5;
-  --e-panel:#fff;
-  --e-line:#dbe3df;
-  --e-line2:#e6ece9;
-  --e-ink:#172923;
-  --e-mut:#50625b;
-  --e-t:#12634c;
-  --e-tt:#e6f3ed;
-  background:var(--e-bg);
-  min-height:100vh;
-}
 .yp-app .e1-bar{padding:10px clamp(16px,4vw,56px);gap:8px 20px;background:var(--e-panel)}
 .yp-nav{display:flex;align-items:center;justify-content:flex-end;gap:4px 8px;flex-wrap:wrap;margin-left:auto}
 .yp-app .e1-wrap{width:min(100%,1240px);padding:clamp(24px,5vw,64px) clamp(16px,4vw,48px) 72px}
@@ -381,9 +369,6 @@ body{margin:0;background:#f7f5f0;-webkit-font-smoothing:antialiased}
 .yp-app .e1-sub{margin-top:12px;font-size:16px;line-height:1.55}
 .yp-app .e1-meta{overflow-wrap:anywhere;line-height:1.45;margin-bottom:10px}
 .yp-app .e1-btn,.yp-app .pn-icono{min-height:44px}
-.yp-app .e1-btn.t,.yp-app .e1-go #btn-cargar:not(:disabled){color:#fff;background:#12634c;border-color:#12634c}
-.yp-app .e1-btn.t:hover,.yp-app .e1-go #btn-cargar:not(:disabled):hover{background:#0c4938;border-color:#0c4938}
-.yp-app :is(button,a,input,summary):focus-visible{outline:3px solid #12634c;outline-offset:3px}
 .yp-app #totales{grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(8px,2vw,18px);margin-bottom:28px}
 .yp-app .e1-stat{padding:clamp(12px,2vw,20px);border-radius:14px;min-width:0}
 .yp-app .e1-stat b{font-size:clamp(16px,2.3vw,26px);overflow-wrap:anywhere}
@@ -405,7 +390,7 @@ body{margin:0;background:#f7f5f0;-webkit-font-smoothing:antialiased}
 .yp-company-head p,.yp-company-detail{color:var(--e-mut);font-size:13px;overflow-wrap:anywhere}
 .yp-company-head p{margin-top:5px}
 .yp-company-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;border:1px solid var(--e-line2);background:var(--e-line2);border-radius:10px;overflow:hidden}
-.yp-company-metrics>div{background:#f7faf8;padding:10px 12px;min-width:0}
+.yp-company-metrics>div{background:#fbfaf7;padding:10px 12px;min-width:0}
 .yp-company-metrics dt{font-size:12px;color:var(--e-mut)}
 .yp-company-metrics dd{font-weight:600;margin:4px 0 0;overflow-wrap:anywhere}
 .yp-company-detail{display:flex;align-items:center;gap:6px 14px;flex-wrap:wrap}
@@ -418,8 +403,8 @@ body{margin:0;background:#f7f5f0;-webkit-font-smoothing:antialiased}
 .yp-upload-bar .e1-menu-lista{left:auto;right:0;width:min(280px,76vw);min-width:0}
 .yp-upload .e1-periodo{margin:12px 0 0}
 .yp-upload .e1-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(12px,2vw,22px)}
-.yp-upload .e1-card{border-radius:14px;background:#f7faf8;min-width:0;padding:clamp(14px,2.5vw,24px)}
-.yp-upload .e1-drop:not([hidden]){display:grid;place-content:center;gap:5px;min-height:132px;background:var(--e-panel);border-color:#8ca79b;border-radius:12px}
+.yp-upload .e1-card{border-radius:14px;background:#fbfaf7;min-width:0;padding:clamp(14px,2.5vw,24px)}
+.yp-upload .e1-drop:not([hidden]){display:grid;place-content:center;gap:5px;min-height:132px;background:var(--e-panel);border-color:#cfc8ba;border-radius:12px}
 .yp-upload .e1-drop:hover{background:var(--e-tt);border-color:var(--e-t)}
 .yp-upload .e1-file,.yp-upload .e1-file .acts{flex-wrap:wrap}
 .yp-upload .e1-file .acts{max-width:100%}

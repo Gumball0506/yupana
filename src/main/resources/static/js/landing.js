@@ -17,10 +17,8 @@ const recorrido = document.getElementById("recorrido");
 const controles = recorrido.querySelector(".yp-tour-controls");
 const diapositivas = recorrido.querySelector(".yp-tour-slides");
 const botones = [...controles.querySelectorAll("[aria-controls]")];
-const alternar = controles.querySelector(".yp-tour-toggle");
 const movimientoReducido = matchMedia("(prefers-reduced-motion: reduce)");
 let indice = 0;
-let pausado = movimientoReducido.matches;
 let visible = false;
 let temporizador;
 
@@ -35,38 +33,28 @@ function mostrarPantalla(nuevoIndice) {
 
 function programarAvance() {
   clearTimeout(temporizador);
-  if (pausado || !visible || document.hidden || diapositivas.matches(":hover, :focus-within")) return;
+  if (movimientoReducido.matches || !visible || document.hidden || diapositivas.matches(":hover, :focus-within")) return;
   temporizador = setTimeout(() => {
     mostrarPantalla(indice + 1);
     programarAvance();
   }, 7000);
 }
 
-function cambiarPausa(valor) {
-  pausado = valor;
-  alternar.textContent = pausado ? "Reproducir" : "Pausar";
-  diapositivas.setAttribute("aria-live", pausado ? "polite" : "off");
-  programarAvance();
-}
-
 function seleccionar(nuevoIndice) {
-  cambiarPausa(true);
   mostrarPantalla(nuevoIndice);
+  programarAvance();
 }
 
 botones.forEach((boton, posicion) => boton.addEventListener("click", () => seleccionar(posicion)));
 for (const flecha of controles.querySelectorAll("[data-tour-step]")) {
   flecha.addEventListener("click", () => seleccionar(indice + Number(flecha.dataset.tourStep)));
 }
-alternar.addEventListener("click", () => cambiarPausa(!pausado));
 for (const evento of ["pointerenter", "pointerleave", "focusin"]) {
   diapositivas.addEventListener(evento, programarAvance);
 }
 diapositivas.addEventListener("focusout", () => requestAnimationFrame(programarAvance));
 document.addEventListener("visibilitychange", programarAvance);
-movimientoReducido.addEventListener("change", evento => {
-  if (evento.matches) cambiarPausa(true);
-});
+movimientoReducido.addEventListener("change", programarAvance);
 new IntersectionObserver(([entrada]) => {
   visible = entrada.isIntersecting;
   programarAvance();
@@ -74,4 +62,4 @@ new IntersectionObserver(([entrada]) => {
 
 mostrarPantalla(0);
 controles.hidden = false;
-cambiarPausa(pausado);
+programarAvance();
