@@ -509,3 +509,14 @@ body{margin:0;background:#f7f5f0;-webkit-font-smoothing:antialiased}
 .yp-price-note,.yp-price-intro{color:var(--e-mut);margin-top:10px;line-height:1.5}
 .yp-price-note{font-size:13px}
 @media(max-width:700px){.yp-price-grid{grid-template-columns:1fr}.yp-commercial-nav{order:3;width:100%;margin:0;justify-content:center}}
+
+.yp-tour{margin-top:12px;scroll-margin-top:24px}
+.yp-tour-intro,.yp-tour figcaption p{color:var(--e-mut);line-height:1.55}
+.yp-tour-controls:not([hidden]){display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.yp-tour-controls button{background:#fffdf8;border:1px solid var(--e-line);border-radius:24px;padding:8px 16px;min-height:44px;color:var(--e-ink);font:inherit;cursor:pointer}
+.yp-tour-controls button[aria-pressed=true]{background:#a83b18;border-color:#a83b18;color:white}
+.yp-tour figure:not([hidden]){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);align-items:center;gap:clamp(16px,4vw,44px);margin:12px 0;padding:clamp(16px,3vw,32px);background:#fffcf7;border:1px solid var(--e-line);border-radius:20px}
+.yp-tour figcaption h3{font-size:clamp(22px,3vw,34px);line-height:1.12;letter-spacing:-.035em;margin-bottom:12px}
+.yp-tour figure a{display:grid;align-items:center;background:#f2eee7;border-radius:12px;overflow:hidden;aspect-ratio:1050/780;cursor:zoom-in}
+.yp-tour img{width:100%;height:auto;display:block}
+@media(max-width:700px){.yp-tour figure:not([hidden]){grid-template-columns:minmax(0,1fr)}}

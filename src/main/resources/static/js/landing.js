@@ -12,3 +12,17 @@ document.addEventListener("click", e => {
   const a = e.target.closest("[data-cta]");
   if (a) evento("cta_probar_demo", a.dataset.cta);
 });
+
+const recorrido = document.getElementById("recorrido");
+const controles = recorrido.querySelector(".yp-tour-controls");
+const botones = [...controles.querySelectorAll("button")];
+function mostrarPantalla(activo) {
+  for (const boton of botones) {
+    const seleccionado = boton === activo;
+    boton.setAttribute("aria-pressed", String(seleccionado));
+    document.getElementById(boton.getAttribute("aria-controls")).hidden = !seleccionado;
+  }
+}
+for (const boton of botones) boton.addEventListener("click", () => mostrarPantalla(boton));
+mostrarPantalla(botones[0]);
+controles.hidden = false;

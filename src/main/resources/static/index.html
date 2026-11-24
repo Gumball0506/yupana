@@ -8,7 +8,7 @@
 <title>Yupana · Cuadra tus compras con el RCE</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/yupana-e1.css">
+<link rel="stylesheet" href="/css/yupana-e1.css?v=recorrido1">
 </head>
 <body class="yp-app yp-public yp-marketing">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -20,7 +20,7 @@
 <div class="e1">
   <header class="e1-bar">
     <a class="e1-logo" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="6" fill="#1a1712"></rect><circle cx="8" cy="8" r="2.2" fill="#f7f5f0"></circle><circle cx="16" cy="8" r="2.2" fill="#f7f5f0"></circle><circle cx="8" cy="16" r="2.2" fill="#f7f5f0"></circle><circle cx="16" cy="16" r="2.2" fill="#e0643a"></circle></svg>Yupana</a>
-    <nav class="yp-commercial-nav" aria-label="Navegación principal"><a href="#como">Cómo funciona</a><a href="#planes">Planes</a></nav>
+    <nav class="yp-commercial-nav" aria-label="Navegación principal"><a href="#recorrido">Ver recorrido</a><a href="#planes">Planes</a></nav>
     <a class="e1-btn chico-bar sec" href="/login.html" data-cta="barra">Ingresar a Yupana</a>
   </header>
 
@@ -53,11 +53,20 @@
 
     <section class="yp-public-section" id="como" aria-labelledby="yp-como">
       <h2 id="yp-como">Cómo funciona</h2>
-      <ol class="yp-steps">
-        <li><h3>Sube tus archivos</h3><p>Elige la empresa y el periodo. Usa las plantillas CSV o Excel para cargar compras y RCE.</p></li>
-        <li><h3>Revisa las diferencias</h3><p>Compara importes por comprobante y registra una observación o confirmación en cada caso.</p></li>
-        <li><h3>Consulta el historial</h3><p>Vuelve a cualquier mes para revisar las cargas y descargar los archivos originales.</p></li>
-      </ol>
+      <div class="yp-tour" id="recorrido" role="region" aria-label="Recorrido de Yupana">
+        <p class="yp-tour-intro">Explora tres pantallas de Yupana con una empresa de ejemplo.</p>
+        <div class="yp-tour-controls" aria-label="Elegir pantalla" hidden>
+          <button type="button" aria-controls="tour-empresas" aria-pressed="true">Empresas</button>
+          <button type="button" aria-controls="tour-cargas" aria-pressed="false">Cargas</button>
+          <button type="button" aria-controls="tour-historial" aria-pressed="false">Historial</button>
+        </div>
+        <figure id="tour-empresas"><figcaption><h3>Elige la empresa que vas a revisar</h3><p>Busca por razón social o RUC y consulta sus casos pendientes antes de abrir el periodo.</p></figcaption>
+          <a href="/recorrido/empresas.jpg" aria-label="Ampliar captura del panel de empresas"><img loading="lazy" src="/recorrido/empresas.jpg" alt="Panel del estudio con indicadores y tarjetas por empresa"></a></figure>
+        <figure id="tour-cargas"><figcaption><h3>Carga las compras y el RCE del mes</h3><p>Elige el periodo y sube ambos archivos. La conciliación te indica qué comprobantes requieren atención.</p></figcaption>
+          <a href="/recorrido/cargas.jpg" aria-label="Ampliar captura de la carga mensual"><img loading="lazy" src="/recorrido/cargas.jpg" alt="Selector de periodo y áreas de carga para compras y propuesta RCE"></a></figure>
+        <figure id="tour-historial"><figcaption><h3>Recupera el archivo original</h3><p>Abre el historial del mes para ver qué se importó y descargar la misma versión que subiste.</p></figcaption>
+          <a href="/recorrido/historial.jpg" aria-label="Ampliar captura del historial"><img loading="lazy" src="/recorrido/historial.jpg" alt="Historial mensual con nombre de archivo y enlace para descargar el original"></a></figure>
+      </div>
     </section>
 
     <section class="yp-public-section yp-workspace" aria-labelledby="yp-workspace-title">
@@ -86,6 +95,6 @@
   </main>
 </div>
 
-<script src="/js/landing.js"></script>
+<script src="/js/landing.js?v=recorrido1"></script>
 </body>
 </html>
